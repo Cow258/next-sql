@@ -1,0 +1,22 @@
+{
+  "name": "xsql",
+  "version": "0.0.1",
+  "description": "Next-gen SQL connector",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-config-prettier": "^6.11.0",
+    "prettier": "^2.2.1"
+  }
+}
