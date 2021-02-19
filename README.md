@@ -147,7 +147,7 @@ users = [
   { id: 3, name: 'Mary', computer: 51, pets: '22,23', gender: 'F', age: 42, birthAt: '1979-01-01T00:00:00.000Z' },
   { id: 4, name: 'Kitty', computer: null, pets: null, gender: 'F', age: 18, birthAt: '2003-01-01T00:00:00.000Z' },
   { id: 5, name: 'Sam', computer: null, pets: null, gender: 'M', age: 32, birthAt: '1989-01-01T00:00:00.000Z' },
-  { id: 6, name: 'Kevin', computer: null, pets: null, gender: 'M', age: 76, birthAt: '1945-01-01T00:00:00.000Z' },
+  { id: 6, name: 'Kevin', computer: null, pets: '24', gender: 'M', age: 76, birthAt: '1945-01-01T00:00:00.000Z' },
 ]
 ```
 ---
@@ -176,18 +176,27 @@ user = {
 ```
 ---
 ### Advanced query
+We provide a new way to query the database,\
+You can focus more on business logic without worrying about creating SQL statements.
+- Each `function` or `() => {}` is equivalent to a parenthesis
+- Each `where()` is equivalent to `AND`.
+- Each `and()` is equivalent to `AND`.
+- Each `where()` is equivalent to `and()`.
+- Each `or()` is equivalent to `OR`.
+- You can also use `and()` and `or()` anywhere
+- All connective is in front of conditional
 ```js
 const users = await sql()
   .select('`name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear')
   .from('users')
   .where({ isActive: 1, isEnable: 1 })
-  .where('pets', 'not', null)
-  .where((q) => {
-    q.or(() => {
-      q.and('age', 'between', [40, 45])
-      q.and('age', 'between', [50, 60])
+  .where('pets', 'NOT', null)
+  .and(() => {
+    this.or(() => {
+      this.and('age', 'between', [40, 45])
+      this.and('age', 'between', [50, 60])
     })
-    q.or('age', 'between', [18, 25])
+    this.or('age', 'between', [18, 25])
   })
   .read()
 ```
@@ -195,7 +204,10 @@ Equivalent to the following SQL statement
 ```sql
 SELECT `name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear 
 FROM `users`
-WHERE `isActive` = ? AND `isEnable` = ? AND (
+WHERE `isActive` = ? 
+AND `isEnable` = ? 
+AND `pets` NOT NULL
+AND (
   (
     `age` between ? AND ?
     `age` between ? AND ?
@@ -209,9 +221,7 @@ Result
 ```js
 users = [
   { name: 'Peter', age: 20, birthYear: '2001' },
-  { name: 'Tom', age: 56, birthYear: '1965' },
   { name: 'Mary', age: 42, birthYear: '1979' },
-  { name: 'Kitty', age: 18, birthYear: '2003' },
 ]
 ```
 ---
