@@ -1,8 +1,51 @@
 
-# Intro
-`xSQL` is next-gen relationship SQL connector.\
-Easy to use.
-out of the box.
+# xSQL
+# Table of content
+- [Introduction](#introduction)
+- [Getting Start](#getting-start)
+- [Configuration](#configuration)
+- [Basic](#basic)
+    + [Standard Query](#standard-query)
+    + [Fallback Query](#fallback-query)
+    + [Fetch from multiple host](#fetch-from-multiple-host)
+    + [Load module](#load-module)
+- [Examples](#examples)
+    + [Read all rows from users table](#read-all-rows-from--users--table)
+    + [Read single user](#read-single-user)
+    + [Advanced query](#advanced-query)
+    + [Row filter](#row-filter)
+    + [Group by and Order by](#group-by-and-order-by)
+    + [Limit and Offset](#limit-and-offset)
+    + [Pagination](#pagination)
+    + [Relationship](#relationship)
+    + [Insert Row](#insert-row)
+    + [Insert multiple rows in batch mode](#insert-multiple-rows-in-batch-mode)
+    + [Insert or update when exist in batch mode](#insert-or-update-when-exist-in-batch-mode)
+    + [Insert or update when exist in batch summing mode](#insert-or-update-when-exist-in-batch-summing-mode)
+    + [Update Row](#update-row)
+    + [Update Row in summing mode](#update-row-in-summing-mode)
+    + [Delete Row](#delete-row)
+
+# Introduction
+`xSQL` is next-gen relationship database connector.\
+
+representing information as a series of JSON-like documents, 
+as opposed to the table and row format of relational systems.
+the key difference is that the structure of the key/value pairs in a given collection can vary from table to table
+This more flexible approach is possible because documents are self-describing.
+
+- Easy to use
+- Easy to manage API content
+- Out of the box without schema configuration
+- Powerful relational table linking
+- Powerful filter and SQL statement builder
+- Multiple host connections
+- Batch insert and update
+- Batch update with database-side summing
+- Pagination
+- Transaction
+- Module customization
+- Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
 # Getting Start
 ```sh
@@ -13,13 +56,25 @@ OR
 yarn add xsql
 ```
 
-## Config Examples
+# Configuration
 We will pass your config into `mysql` directly.\
 You can find more detail from the following link\
 https://github.com/mysqljs/mysql#connection-options
+https://github.com/mysqljs/mysql#pool-options
+
+__Options:__\
+All config of this level will apply into each hosts.\
+Also this config options as same as mysql [connection options](https://github.com/mysqljs/mysql#pool-options) and [pool options](https://github.com/mysqljs/mysql#pool-options).
+
+- `default`: Default key of `hosts`
+- `hosts`:
+  - `key`: The key of this `host`
+  - `value`: The config of this `host` only, all config of this level will override the default config
+
 ```js
 const sql = require('xsql')
-const config = {
+// It will create PoolCluster for each hosts.
+sql.init({
   // Each connection is created will use the following default config 
   port: 3306,
   connectionLimit: 5,
@@ -46,14 +101,37 @@ const config = {
       timeout: 30000, // <- You can override default config 
     }
   }
-}
-// It will create PoolCluster for each hosts.
-sql.init(config)
+})
+```
+# Basic
+
+### Standard Query
+```js
+const rows = await sql().from('table').read()
 ```
 
----
+### Fallback Query
+```js
+// Will return the origin raw data from mysql node module
+const result = await sql().query('SELECT * FROM `user` WHERE id = ?', [5])
+```
 
-### Read all rows from `users` table
+### Fetch from multiple host
+```js
+const hostA_tableA_rows = await sql('hostA').from('tableA').read()
+const hostB_tableB_rows = await sql('hostB').from('tableB').read()
+```
+
+### Load module
+[How to build your own module](MODULE.md)
+```js
+const thirdPartyModule = require('thirdPartyModule')
+sql.loadModule(thirdPartyModule)
+```
+
+# Examples
+
+### Read all rows from users table
 ```js
 const users = await sql().from('users').read()
 ```
@@ -176,7 +254,7 @@ users = [
 ---
 ### Group by and Order by
 ```js
-const users = await xsql()
+const users = await sql()
   .select('`gender`, AVG(`age`) AS averageAge')
   .from('users')
   .groupBy('`gender`')
@@ -201,7 +279,7 @@ users = [
 ---
 ### Limit and Offset
 ```js
-const users = await xsql()
+const users = await sql()
   .select('`id`, `name`')
   .from('users')
   .limit(1)
@@ -223,14 +301,65 @@ users = [
 ---
 
 ### Pagination
+> Will override the `limit()` and `offset()` settings!
 ```js
-const users = await xsql()
+const users = await sql()
   .from('users')
   .pagination({
+    // The current page
     currPage: 2,
-    step: 8,
+    // How many rows pre each page
+    rowStep: 10,
+    // How many pages will shown on the navigation bar
+    navStep: 4,
   })
   .read()
+```
+Result
+```js
+// Users of current page
+users = [...UserObject]
+
+/*
+Case 1: Normal
+    Current Page : 2
+     Total users : 50
+Range of user id : 11 to 20
+*/
+users.pagination = {
+  currPage: 2,
+  rowStep: 10,
+  navStep: 4,
+  hasPrev: true,
+  hasNext: true,
+  nav: {
+    start: 1,
+    end: 4,
+    hasPrev: false,
+    hasNext: true,
+  },
+}
+
+/*
+Case 2: Out of range
+    Current Page : 6
+     Total users : 50
+Range of user id : ---
+*/
+users.pagination = {
+  isOutOfRange: true,
+  currPage: 6,
+  rowStep: 10,
+  navStep: 4,
+  hasPrev: true,
+  hasNext: false,
+  nav: {
+    start: 5,
+    end: 5,
+    hasPrev: false,
+    hasNext: false,
+  },
+}
 ```
 
 ---
@@ -246,7 +375,10 @@ const users = await sql()
     filter: ({ id, type, name }) => ({ id, type, name }),
   })
   .fromMany('primaryCar', 'id:cars.user', {
-    query: (q) => q.where({ isPrimary: 1 }),
+    query: (q) => {
+      q.select('`id`, `model`')
+      q.where({ isPrimary: 1 })
+    },
     filter: ({ id, model }) => ({ id, model }),
   })
   .read()
@@ -263,7 +395,10 @@ SELECT * FROM `computers` WHERE `id` IN (50, 51)
 SELECT * FROM `pets` WHERE `id` IN (20, 21, 22, 23)
 
 # fromMany Query
-SELECT * FROM `cars` WHERE `user` IN (1, 2, 3, 4, 5, 6) AND isPrimary = ?
+SELECT `id`, `model` 
+FROM `cars` 
+WHERE `user` IN (1, 2, 3, 4, 5, 6)
+AND isPrimary = ?
 # fromMany Query Params
 # [1]
 ```
@@ -299,6 +434,7 @@ users = [
   ...
 ]
 ```
+---
 ### Insert Row
 ```js
 const newUser = {
@@ -307,7 +443,7 @@ const newUser = {
   computer: 56,
   pets: '69,70',
 }
-await xsql().insert('users', newUser)
+await sql().insert('users', newUser)
 ```
 
 ### Insert multiple rows in batch mode
@@ -316,7 +452,7 @@ const newUsers = [
   { name: 'Foo', age: 28 },
   { name: 'Bar', age: 32 },
 ]
-await xsql().insert('users', newUsers)
+await sql().insert('users', newUsers)
 ```
 
 ### Insert or update when exist in batch mode
@@ -325,7 +461,7 @@ const newComputers = [
   { id: 50, name: 'Win10', ip: '192.168.1.124' }
   { name: 'MacOS', ip: '192.168.1.125' }
 ]
-await xsql().update('computers', newComputers, {
+await sql().update('computers', newComputers, {
   primaryKey: 'id',
 })
 ```
@@ -336,15 +472,38 @@ const wallets = [
   { user: 1, cash: 50 }
   { user: 2, cash: -50 }
 ]
-await xsql().update('wallets', wallets, {
+await sql().update('wallets', wallets, {
   primaryKey: 'user',
   sumKey: ['cash']
 })
 ```
+---
+### Update Row
+```js
+await sql()
+  .from('users')
+  .where({ id: 1 })
+  .update({
+    name: 'Tom',
+  })
+```
 
+### Update Row in summing mode
+```js
+await sql()
+  .from('users')
+  .where({ id: 1 })
+  .update({
+    name: 'Tom',
+    cash: 50,
+  }, {
+    sumKey: ['cash']
+  })
+```
+---
 ### Delete Row
 ```js
-await xsql()
+await sql()
   .from('users')
   .where({ id: 1 })
   .delete()
