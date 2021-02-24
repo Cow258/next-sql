@@ -152,9 +152,12 @@ users = [
   { id: 5, name: 'Sam', computer: null, pets: null, gender: 'M', age: 32, birthAt: '1989-01-01T00:00:00.000Z' },
   { id: 6, name: 'Kevin', computer: null, pets: '24', gender: 'M', age: 76, birthAt: '1945-01-01T00:00:00.000Z' },
 ]
+
 ```
 ---
+
 ### Read single user
+__Example:__
 ```js
 const [ user ] = await sql()
   .from('users')
@@ -177,8 +180,11 @@ user = {
   birthAt: '1989-01-01T00:00:00.000Z',
 }
 ```
+
 ---
+
 ### Advanced query
+
 We provide a new way to query the database,\
 You can focus more on business logic without worrying about creating SQL statements.
 - Each `function` or `() => {}` is equivalent to a parenthesis
@@ -188,6 +194,8 @@ You can focus more on business logic without worrying about creating SQL stateme
 - Each `or()` is equivalent to `OR`.
 - You can also use `and()` and `or()` anywhere
 - All connective is in front of conditional
+
+__Example:__
 ```js
 const users = await sql()
   .select('`name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear')
@@ -227,8 +235,11 @@ users = [
   { name: 'Mary', age: 42, birthYear: '1979' },
 ]
 ```
+
 ---
+
 ### Row filter
+__Example:__
 ```js
 const users = await sql()
   .from('users')
@@ -264,8 +275,11 @@ users = [
   },
 ]
 ```
+
 ---
+
 ### Group by and Order by
+__Example:__
 ```js
 const users = await sql()
   .select('`gender`, AVG(`age`) AS averageAge')
@@ -290,7 +304,9 @@ users = [
 ```
 
 ---
+
 ### Limit and Offset
+__Example:__
 ```js
 const users = await sql()
   .select('`id`, `name`')
@@ -311,10 +327,21 @@ users = [
   { id: 4, name: 'Kitty' },
 ]
 ```
+
 ---
 
 ### Pagination
+Automatically manage pagination.
+
+__Demo:__
+- [React]()
+- [Handlebar]()
+
 > Will override the `limit()` and `offset()` settings!
+
+> Only can use with `read()`
+
+__Example:__
 ```js
 const users = await sql()
   .from('users')
@@ -377,6 +404,89 @@ users.pagination = {
 
 ---
 ### Relationship
+- Use RDS like No-SQL
+- No longer need to use JOIN TABLE
+- Construct the data model directly from the query
+- Non-blocking asynchronous table rows mapper
+
+#### Mapper syntax
+`{currentKey}`__:__`{targetTable}`__.__`{targetKey}`
+- `currentKey`: The key of current table you want the map
+- `targetTable`: Which table do you want to map?
+- `targetKey`: The key of the targer table
+
+Example:
+
+When mapping computer into user
+
+__Users Table__ (Current Table)
+| id | name | computer |
+|----|------|----------|
+| 1  | Tom  | 50       |
+
+__Computers Table__ (Target Table)
+| id | name  | ip            |
+|----|-------|---------------|
+| 50 | Win10 | 192.168.0.123 |
+```js
+await sql()
+  .from('users')
+  .toOne('computer:computers.id')
+  .read()
+```
+
+#### toOne(mapper, options)
+Each row linked to one foreign item
+
+Parameters:
+- `mapper`: The mapper string
+- `options`: The options for this relationship mapping
+  - `filter`: `(row) => (row)`\
+    Each incoming row will be replaced by this function,\
+    async function is not allowed.
+  - `query`: `(q) => {}`\
+    The `q` of the callback is a new instance of `sql()`,\
+    you can do any addition query you want,\
+    also you can do unlimited layer relationship.
+
+#### toMany(mapper, options)
+Each row linked to many foreign items
+
+Parameters:
+- `mapper`: The mapper string
+- `options`: The options for this relationship mapping
+  - `splitter`: `','` || `'json[]'` || `'json.key'`\
+    You can customize the separation character,\
+    or using `JSON` to provide the mapping data.\
+    `JSON` must eventually return `string[]` or `number[]` or `null`
+  - `filter`: `(row) => (row)`\
+    Each incoming row will be replaced by this function,\
+    async function is not allowed.
+  - `query`: `(q) => {}`\
+    The `q` of the callback is a new instance of `sql()`,\
+    you can do any addition query you want,\
+    also you can do unlimited layer relationship.
+
+#### fromOne(addonKey, mapper, options)
+Each foreign items linked to one current row
+
+Parameters:
+- `addonKey`: You must provide the key for store all incoming data, this key will add to the end of current row object
+- `mapper`: The mapper string
+- `options`: The options for this relationship mapping
+  - `filter`: `(row) => (row)`\
+    Each incoming row will be replaced by this function,\
+    async function is not allowed.
+  - `query`: `(q) => {}`\
+    The `q` of the callback is a new instance of `sql()`,\
+    you can do any addition query you want,\
+    also you can do unlimited layer relationship.
+
+#### fromMany()
+> Not supported at this moment.\
+> Maybe it will be supported in some days of the future.
+
+#### Example
 ```js
 const users = await sql()
   .from('users')
@@ -387,10 +497,13 @@ const users = await sql()
   .toMany('pets:pets.id', {
     filter: ({ id, type, name }) => ({ id, type, name }),
   })
-  .fromMany('primaryCar', 'id:cars.user', {
+  .fromOne('primaryCar', 'id:cars.user', {
     query: (q) => {
       q.select('`id`, `model`')
       q.where({ isPrimary: 1 })
+      q.toOne('brand:brands.id', {
+        filter: ({ id, name } => ({ id, name }))
+      })
     },
     filter: ({ id, model }) => ({ id, model }),
   })
@@ -407,13 +520,14 @@ SELECT * FROM `computers` WHERE `id` IN (50, 51)
 # toMany Query
 SELECT * FROM `pets` WHERE `id` IN (20, 21, 22, 23)
 
-# fromMany Query
+# fromOne Query
 SELECT `id`, `model` 
 FROM `cars` 
 WHERE `user` IN (1, 2, 3, 4, 5, 6)
-AND isPrimary = ?
-# fromMany Query Params
-# [1]
+AND isPrimary = 1
+
+# toOne query inside fromOne query
+SELECT * FROM `brand` WHERE `id` = 25
 ```
 Result
 ```js
@@ -422,19 +536,29 @@ users = [
     id: 1,
     name: 'Tom',
     age: 20,
+    // toOne()
     computer: {
       id: 50,
       name: 'Windows 10',
       ip: '192.168.1.123',
     },
+    // toMany()
     pets: [
       { id: 20, type: 'dog', name: 'Foo' },
       { id: 21, type: 'cat', name: 'Bar' },
     ],
-    primaryCar: {
-      id: 101,
-      model: 'Model S'
-    },
+    // fromOne()
+    primaryCar: [
+      {
+        id: 101,
+        model: 'Model S',
+        // toOne()
+        brand: {
+          id: 25,
+          name: 'Tesla',
+        },
+      },
+    ],
   },
   {
     id: 2,
