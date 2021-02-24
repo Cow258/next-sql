@@ -10,7 +10,7 @@
     + [Fetch from multiple host](#fetch-from-multiple-host)
     + [Load module](#load-module)
 - [Examples](#examples)
-    + [Read all rows from users table](#read-all-rows-from--users--table)
+    + [Read all rows from users table](#read-all-rows-from-users-table)
     + [Read single user](#read-single-user)
     + [Advanced query](#advanced-query)
     + [Row filter](#row-filter)
@@ -24,7 +24,10 @@
     + [Insert or update when exist in batch summing mode](#insert-or-update-when-exist-in-batch-summing-mode)
     + [Update Row](#update-row)
     + [Update Row in summing mode](#update-row-in-summing-mode)
+    + [Update all rows of table](#update-all-rows-of-table)
     + [Delete Row](#delete-row)
+    + [Delete all rows of table](#delete-all-rows-of-table)
+    + [Transaction](#transaction)
 
 # Introduction
 `xSQL` is next-gen relationship database connector.\
