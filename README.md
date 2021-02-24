@@ -462,7 +462,7 @@ const newUsers = [
   { name: 'Foo', age: 28 },
   { name: 'Bar', age: 32 },
 ]
-await sql().insert('users', newUsers)
+await sql().batchInsert('users', newUsers)
 ```
 
 ### Insert or update when exist in batch mode
@@ -471,7 +471,7 @@ const newComputers = [
   { id: 50, name: 'Win10', ip: '192.168.1.124' }
   { name: 'MacOS', ip: '192.168.1.125' }
 ]
-await sql().update('computers', newComputers, {
+await sql().batchInsert('computers', newComputers, {
   primaryKey: 'id',
 })
 ```
@@ -482,7 +482,7 @@ const wallets = [
   { user: 1, cash: 50 }
   { user: 2, cash: -50 }
 ]
-await sql().update('wallets', wallets, {
+await sql().batchInsert('wallets', wallets, {
   primaryKey: 'user',
   sumKey: ['cash']
 })
@@ -491,9 +491,8 @@ await sql().update('wallets', wallets, {
 ### Update Row
 ```js
 await sql()
-  .from('users')
   .where({ id: 1 })
-  .update({
+  .update('users', {
     name: 'Tom',
   })
 ```
@@ -501,20 +500,62 @@ await sql()
 ### Update Row in summing mode
 ```js
 await sql()
-  .from('users')
   .where({ id: 1 })
-  .update({
+  .update('users', {
     name: 'Tom',
     cash: 50,
   }, {
     sumKey: ['cash']
   })
 ```
+
+### Update all rows of table
+```js
+await sql().update('users', { wallet: 0 })
+```
 ---
+
 ### Delete Row
 ```js
-await sql()
-  .from('users')
-  .where({ id: 1 })
-  .delete()
+await sql().where({ id: 1 }).delete('users')
+```
+
+### Delete all rows of table
+```js
+await sql().delete('users')
+```
+---
+
+### Transaction
+```js
+// [User A] transfers $50 to [User B]
+const userA = 1
+const userB = 2
+const amount = 50;
+await sql().transaction(async (t) => {
+  const logAt = Date.now()
+  // Extract $50 from userA
+  await t()
+    .from('users')
+    .where(
+      { id: userA, wallet: amount }, 
+      { sumKey: ['wallet'] }
+    )
+    .update()
+
+  // Deposit $50 into userB
+  await t()
+    .from('users')
+    .where(
+      { id: userB, wallet: amount }, 
+      { sumKey: ['wallet'] }
+    )
+    .update()
+
+  // Log into database
+  await t().batchInsert('walletLogs', [
+    { type: 'EXTRACT', user: userA, change: -amount, logAt }
+    { type: 'DEPOSIT', user: userB, change: amount, logAt }
+  ])
+})
 ```
