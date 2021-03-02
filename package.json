@@ -1,13 +1,31 @@
 {
   "name": "xsql",
   "version": "0.0.1",
-  "description": "Next-gen SQL connector",
-  "main": "index.js",
+  "description": "Next-gen SQL connector, easy way to query SQL and create relationship linked object.",
+  "keywords": [
+    "sql",
+    "mysql",
+    "kenx",
+    "mysql2",
+    "query",
+    "querybuilder",
+    "connector",
+    "db",
+    "database"
+  ],
+  "author": "Cowboy Ho <cow_258@hotmail.com>",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "files": [
+    "lib/**"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cow258/xsql"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "mysql": "^2.18.1"
   },
