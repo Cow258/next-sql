@@ -38,6 +38,7 @@ module.exports = {
         devDependencies: true,
       },
     ],
+    'func-names': 0,
     'max-len': 0,
     'no-continue': 0,
     camelcase: 0,
