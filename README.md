@@ -116,7 +116,7 @@ sql.init({
 
 ### Standard Query
 ```js
-const rows = await sql().from('table').read()
+const rows = await sql().read('table')
 ```
 
 ### Fallback Query
@@ -127,8 +127,8 @@ const result = await sql().query('SELECT * FROM `user` WHERE id = ?', [5])
 
 ### Fetch from multiple host
 ```js
-const hostA_tableA_rows = await sql('hostA').from('tableA').read()
-const hostB_tableB_rows = await sql('hostB').from('tableB').read()
+const hostA_tableA_rows = await sql('hostA').read('tableA')
+const hostB_tableB_rows = await sql('hostB').read('tableB')
 ```
 
 ### Load module
@@ -142,7 +142,7 @@ sql.loadModule(thirdPartyModule)
 
 ### Read all rows from users table
 ```js
-const users = await sql().from('users').read()
+const users = await sql().read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -166,9 +166,8 @@ users = [
 __Example:__
 ```js
 const [ user ] = await sql()
-  .from('users')
   .where({ id: 5 })
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -205,17 +204,16 @@ __Example:__
 ```js
 const users = await sql()
   .select('`name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear')
-  .from('users')
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
-  .and(() => {
-    this.or(() => {
-      this.and('age', 'between', [40, 45])
-      this.and('age', 'between', [50, 60])
+  .and(q => {
+    q.or(() => {
+      q.and('age', 'between', [40, 45])
+      q.and('age', 'between', [50, 60])
     })
-    this.or('age', 'between', [18, 25])
+    q.or('age', 'between', [18, 25])
   })
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -248,7 +246,6 @@ users = [
 __Example:__
 ```js
 const users = await sql()
-  .from('users')
   .filter((row) => ({
     id: row.id,
     age: row.age,
@@ -260,11 +257,11 @@ const users = await sql()
     },
   }))
   .where({ id: 1 })
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
-SELECT * FROM `users`
+SELECT * FROM `users` WHERE `id` = 1
 ```
 Result
 ```js
@@ -289,10 +286,9 @@ __Example:__
 ```js
 const users = await sql()
   .select('`gender`, AVG(`age`) AS averageAge')
-  .from('users')
   .groupBy('`gender`')
   .orderBy('`gender` DESC, `averageAge`')
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -316,10 +312,9 @@ __Example:__
 ```js
 const users = await sql()
   .select('`id`, `name`')
-  .from('users')
   .limit(1)
   .offset(3)
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -350,7 +345,6 @@ __Demo:__
 __Example:__
 ```js
 const users = await sql()
-  .from('users')
   .pagination({
     // The current page
     currPage: 2,
@@ -359,7 +353,7 @@ const users = await sql()
     // How many pages will shown on the navigation bar
     navStep: 4,
   })
-  .read()
+  .read('users')
 ```
 Result
 ```js
@@ -436,9 +430,8 @@ __Computers Table__ (Target Table)
 | 50 | Win10 | 192.168.0.123 |
 ```js
 await sql()
-  .from('users')
   .toOne('computer:computers.id')
-  .read()
+  .read('users')
 ```
 
 #### toOne(mapper, options)
@@ -495,7 +488,6 @@ Parameters:
 #### Example
 ```js
 const users = await sql()
-  .from('users')
   .filter(({ id, name, age }) => ({ id, name, age }))
   .toOne('computer:computers.id', {
     filter: ({ id, name, ip }) => ({ id, name, ip }),
@@ -513,7 +505,7 @@ const users = await sql()
     },
     filter: ({ id, model }) => ({ id, model }),
   })
-  .read()
+  .read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -669,21 +661,19 @@ await sql().transaction(async (t) => {
   const logAt = Date.now()
   // Extract $50 from userA
   await t()
-    .from('users')
     .where(
       { id: userA, wallet: amount }, 
       { sumKey: ['wallet'] }
     )
-    .update()
+    .update('users')
 
   // Deposit $50 into userB
   await t()
-    .from('users')
     .where(
       { id: userB, wallet: amount }, 
       { sumKey: ['wallet'] }
     )
-    .update()
+    .update('users')
 
   // Log into database
   await t().batchInsert('walletLogs', [

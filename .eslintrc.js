@@ -18,9 +18,10 @@ module.exports = {
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'plugin:jest/recommended',
     'prettier',
   ],
-  plugins: ['import'],
+  plugins: ['jest', 'import'],
   globals: {
     window: false,
   },
@@ -32,12 +33,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: true,
-      },
-    ],
+    'global-require': 0,
     'func-names': 0,
     'max-len': 0,
     'no-continue': 0,
@@ -45,7 +41,6 @@ module.exports = {
     'no-console': 1,
     'no-underscore-dangle': 0,
     'linebreak-style': ['off', 'windows'],
-    'import/prefer-default-export': 0,
     'no-param-reassign': 0,
     'object-curly-newline': 0,
     'class-methods-use-this': 0,
@@ -62,7 +57,6 @@ module.exports = {
     'consistent-return': 0,
     'prefer-rest-params': 0,
     'no-script-url': 0,
-    'import/newline-after-import': 0,
     'operator-linebreak': 0,
     'max-classes-per-file': 0,
     semi: ['error', 'never'],
@@ -79,6 +73,18 @@ module.exports = {
     quotes: ['error', 'single'],
     'quote-props': ['error', 'as-needed'],
     'eol-last': ['error', 'always'],
+    'no-await-in-loop': 0,
+    'jest/expect-expect': 'off',
+    'jest/no-disabled-tests': 'off',
+    'import/newline-after-import': 0,
+    'import/prefer-default-export': 0,
+    'import/no-self-import': 0,
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+      },
+    ],
     'import/order': [
       'error',
       {
