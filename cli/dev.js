@@ -100,17 +100,31 @@ async function main() {
   //     flag: 5,
   //   })
 
-  const users = await sql()
-    // .where(q => {
-    //   q.where('id', 'in', [2, 3])
-    // })
-    // .and(q => {
-    //   q.where('id', 'in', [3, 4])
-    // })
-    // .where('name', 'like', '%a%')
-    // .orderBy('id desc')
-    .read('users')
-  console.table(users)
+  // const users = await sql()
+  //   // .where(q => {
+  //   //   q.where('id', 'in', [2, 3])
+  //   // })
+  //   // .and(q => {
+  //   //   q.where('id', 'in', [3, 4])
+  //   // })
+  //   // .where('name', 'like', '%a%')
+  //   // .orderBy('id desc')
+  //   .read('users')
+  // console.table(users)
+
+  await sql().transaction(async (t) => {
+    const { insertId } = await t().insert('users', {
+      name: 'Test3',
+      createAt: Date.now(),
+    })
+    await t().insert('users', {
+      id: insertId,
+      name: 'Test4',
+      createAt: Date.now(),
+    })
+  })
+
+
   process.exit()
 }
 main()
