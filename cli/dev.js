@@ -55,42 +55,65 @@ const s = sql()
 const { conditions, ...state } = s._state
 console.table('state', state)
 console.table('conditions', conditions)
-const statement = s.getStatement('read', 'users')
-console.log('s.getStatement()', statement)
-console.table('s.getRaw()', s.getRaw(...statement))
+const statement = s.toStatement('read', 'users')
+console.log('s.toStatement()', statement)
+console.table('s.toRaw()', statement.toRaw())
 
 console.log('===================================')
 
-const s2 = sql()
-const statement2 = s2.getStatement('update', 'users', {
+const statement2 = sql().toStatement('update', 'users', {
   name: 'Mary',
   cash: 50,
   createAt: new Date(),
 })
-console.log('s2.getStatement()', statement2)
-console.table('s2.getRaw()', s2.getRaw(...statement2))
+console.log('s2.toStatement()', statement2)
+console.table('s2.toRaw()', statement2.toRaw())
 
-// console.log('===================================')
+console.log('===================================')
+
+
 
 // const s3 = s.clone()
 // s3.and({ asd: 999 })
-// const statement3 = s3.getStatement('update', 'users', { name: 'Mary' })
-// console.log('s3.getStatement()', statement3)
-// console.table('s3.getRaw()', s3.getRaw(...statement3))
+// const statement3 = s3.toStatement('update', 'users', { name: 'Mary' })
+// console.log('s3.toStatement()', statement3)
+// console.table('s3.toRaw()', s3.toRaw(...statement3))
 
 // console.log('===================================')
 
-// const statement4 = s.getStatement('read', 'users')
-// console.log('s.getStatement()', statement4)
-// console.table('s.getRaw()', s.getRaw(...statement4))
+// const statement4 = s.toStatement('read', 'users')
+// console.log('s.toStatement()', statement4)
+// console.table('s.toRaw()', s.toRaw(...statement4))
 
 
-// async function main() {
-//   const users = await sql().query('SELECT * FROM users')
-//   console.log(users)
-//   process.exit()
-// }
-// main()
+async function main() {
+
+  // const newUser = await sql().insert('users', {
+  //   name: 'Sam',
+  //   createAt: Date.now(),
+  // })
+  // console.log(newUser)
+
+  // await sql()
+  //   .where({ id: newUser.insertId })
+  //   .update('users', {
+  //     flag: 5,
+  //   })
+
+  const users = await sql()
+    // .where(q => {
+    //   q.where('id', 'in', [2, 3])
+    // })
+    // .and(q => {
+    //   q.where('id', 'in', [3, 4])
+    // })
+    // .where('name', 'like', '%a%')
+    // .orderBy('id desc')
+    .read('users')
+  console.table(users)
+  process.exit()
+}
+main()
 
 
   // (async () => {
