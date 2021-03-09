@@ -5,12 +5,12 @@
 // console.log(d.getTime())
 const util = require('util')
 
-const sql = require('../lib/index')
+const xsql = require('../lib/index')
 
 require('console.table')
 // const is = require('../lib/is')
 
-sql.init({
+xsql.init({
   defaultHost: 'test',
   hosts: {
     test: {
@@ -31,10 +31,10 @@ sql.init({
     },
   },
 })
-console.log(util.inspect(sql, false, null, true))
+console.log(util.inspect(xsql, false, null, true))
 
 
-const s = sql()
+const s = xsql()
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
   .and(q => {
@@ -61,7 +61,7 @@ console.table('s.toRaw()', statement.toRaw())
 
 console.log('===================================')
 
-const statement2 = sql().toStatement('update', 'users', {
+const statement2 = xsql().toStatement('update', 'users', {
   name: 'Mary',
   cash: 50,
   createAt: new Date(),
@@ -112,7 +112,7 @@ async function main() {
   //   .read('users')
   // console.table(users)
 
-  await sql().transaction(async (t) => {
+  await xsql().transaction(async (t) => {
     const { insertId } = await t().insert('users', {
       name: 'Test3',
       createAt: Date.now(),

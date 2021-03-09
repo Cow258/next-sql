@@ -35,28 +35,29 @@
     + [Delete all rows of table](#delete-all-rows-of-table)
     + [Transaction](#transaction)
 
-# Introduction
-`xSQL` is next-gen relationship database connector.\
-
-representing information as a series of JSON-like documents, 
-as opposed to the table and row format of relational systems.
-the key difference is that the structure of the key/value pairs in a given collection can vary from table to table
-This more flexible approach is possible because documents are self-describing.
+# 🎉 Introduction
+`xSQL` is next-gen relationship database connector.
 
 - Easy to use
-- Easy to manage API content
-- Out of the box without schema configuration
+- Write less, Do more
+- Easy to manage API content and data
+- Out of the box, No schema configuration before using
 - Powerful relational table linking
 - Powerful filter and SQL statement builder
 - Multiple host connections
 - Batch insert and update
-- Batch update with database-side summing
-- Pagination
-- Transaction
+- Batch update with summation on the database side
+- Pagination with navigation bar
+- Transaction support
 - Module customization
 - Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
-# Getting Start
+> 🏃🏻‍♂️ Working on progress...
+> - Module customization
+> - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
+> - To support One from Many
+
+# 🚀 Getting Start
 ```sh
 npm i xsql
 ```
@@ -65,7 +66,7 @@ OR
 yarn add xsql
 ```
 
-# Configuration
+# ⚙️ Configuration
 We will pass your config into `mysql` directly.\
 You can find more detail from the following link\
 https://github.com/mysqljs/mysql#connection-options
@@ -112,23 +113,23 @@ sql.init({
   }
 })
 ```
-# Basic
+# 💖 Basic
 
 ### Standard Query
 ```js
-const rows = await sql().read('table')
+const rows = await xsql().read('table')
 ```
 
 ### Fallback Query
 ```js
 // Will return the origin raw data from mysql node module
-const result = await sql().query('SELECT * FROM `user` WHERE id = ?', [5])
+const result = await xsql().query('SELECT * FROM `user` WHERE id = ?', [5])
 ```
 
 ### Fetch from multiple host
 ```js
-const hostA_tableA_rows = await sql('hostA').read('tableA')
-const hostB_tableB_rows = await sql('hostB').read('tableB')
+const hostA_tableA_rows = await xsql('hostA').read('tableA')
+const hostB_tableB_rows = await xsql('hostB').read('tableB')
 ```
 
 ### Load module
@@ -138,11 +139,11 @@ const thirdPartyModule = require('thirdPartyModule')
 sql.loadModule(thirdPartyModule)
 ```
 
-# Examples
+# 📚 Examples
 
 ### Read all rows from users table
 ```js
-const users = await sql().read('users')
+const users = await xsql().read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -165,7 +166,7 @@ users = [
 ### Read single user
 __Example:__
 ```js
-const [ user ] = await sql()
+const [ user ] = await xsql()
   .where({ id: 5 })
   .read('users')
 ```
@@ -192,17 +193,17 @@ user = {
 
 We provide a new way to query the database,\
 You can focus more on business logic without worrying about creating SQL statements.
-- Each `function` or `() => {}` is equivalent to a parenthesis
-- Each `where()` is equivalent to `AND`.
-- Each `and()` is equivalent to `AND`.
-- Each `where()` is equivalent to `and()`.
-- Each `or()` is equivalent to `OR`.
-- You can also use `and()` and `or()` anywhere
-- All connective is in front of conditional
+- Each `function` or `(q) => {}` is equal to a bracket `()`
+- The `q` is current instance, it only required when first bracket `()`
+- Each `where()` is equal to `AND`.
+- Each `and()` is equal to `AND`.
+- Each `or()` is equal to `OR`.
+- You can also use `where()` and `and()` and `or()` anywhere
+- All connective (`AND`/`OR`) will render in front of the conditional
 
 __Example:__
 ```js
-const users = await sql()
+const users = await xsql()
   .select('`name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear')
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
@@ -245,7 +246,7 @@ users = [
 ### Row filter
 __Example:__
 ```js
-const users = await sql()
+const users = await xsql()
   .filter((row) => ({
     id: row.id,
     age: row.age,
@@ -284,7 +285,7 @@ users = [
 ### Group by and Order by
 __Example:__
 ```js
-const users = await sql()
+const users = await xsql()
   .select('`gender`, AVG(`age`) AS averageAge')
   .groupBy('`gender`')
   .orderBy('`gender` DESC, `averageAge`')
@@ -310,7 +311,7 @@ users = [
 ### Limit and Offset
 __Example:__
 ```js
-const users = await sql()
+const users = await xsql()
   .select('`id`, `name`')
   .limit(1)
   .offset(3)
@@ -344,7 +345,7 @@ __Demo:__
 
 __Example:__
 ```js
-const users = await sql()
+const users = await xsql()
   .pagination({
     // The current page
     currPage: 2,
@@ -429,7 +430,7 @@ __Computers Table__ (Target Table)
 |----|-------|---------------|
 | 50 | Win10 | 192.168.0.123 |
 ```js
-await sql()
+await xsql()
   .toOne('computer:computers.id')
   .read('users')
 ```
@@ -444,7 +445,7 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `sql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
@@ -462,7 +463,7 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `sql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
@@ -477,17 +478,18 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `sql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
 #### fromMany()
+> __🔄 Coming Soon...__\
 > Not supported at this moment.\
 > Maybe it will be supported in some days of the future.
 
 #### Example
 ```js
-const users = await sql()
+const users = await xsql()
   .filter(({ id, name, age }) => ({ id, name, age }))
   .toOne('computer:computers.id', {
     filter: ({ id, name, ip }) => ({ id, name, ip }),
@@ -578,36 +580,55 @@ const newUser = {
   computer: 56,
   pets: '69,70',
 }
-await sql().insert('users', newUser)
+await xsql().insert('users', newUser)
 ```
 
 ### Insert multiple rows in batch mode
+> __🚫 Pay Attention 🚫__
+> - The key length of each row must be the same
+> - The order of the keys must be the same
 ```js
 const newUsers = [
   { name: 'Foo', age: 28 },
   { name: 'Bar', age: 32 },
 ]
-await sql().batchInsert('users', newUsers)
+await xsql().batchInsert('users', newUsers)
 ```
 
 ### Insert or update when exist in batch mode
+> __🚫 Pay Attention 🚫__
+> - The key length of each row must be the same
+> - The order of the keys must be the same
 ```js
 const newComputers = [
+
+  // Insert record
+  { id: null, name: 'MacOS', ip: '192.168.1.125' }
+
+  // Update record
   { id: 50, name: 'Win10', ip: '192.168.1.124' }
-  { name: 'MacOS', ip: '192.168.1.125' }
+
+  /* 🚫 Will throw errors due to different key lengths 🚫
+  { name: 'Win10', ip: '192.168.1.124' } */
+
+  /* 🚫 Will update the wrong data due to different key order 🚫
+  { ip: '192.168.1.124', name: 'Win10', id: 50, name } */
 ]
-await sql().batchInsert('computers', newComputers, {
+await xsql().batchInsert('computers', newComputers, {
   primaryKey: 'id',
 })
 ```
 
 ### Insert or update when exist in batch summing mode
+> __🚫 Pay Attention 🚫__
+> - The key length of each row must be the same
+> - The order of the keys must be the same
 ```js
 const wallets = [
   { user: 1, cash: 50 }
   { user: 2, cash: -50 }
 ]
-await sql().batchInsert('wallets', wallets, {
+await xsql().batchInsert('wallets', wallets, {
   primaryKey: 'user',
   sumKey: ['cash']
 })
@@ -615,7 +636,7 @@ await sql().batchInsert('wallets', wallets, {
 ---
 ### Update Row
 ```js
-await sql()
+await xsql()
   .where({ id: 1 })
   .update('users', {
     name: 'Tom',
@@ -624,7 +645,7 @@ await sql()
 
 ### Update Row in summing mode
 ```js
-await sql()
+await xsql()
   .where({ id: 1 })
   .update('users', {
     name: 'Tom',
@@ -636,49 +657,65 @@ await sql()
 
 ### Update all rows of table
 ```js
-await sql().update('users', { wallet: 0 })
+await xsql().update('users', { wallet: 0 })
 ```
 ---
 
 ### Delete Row
 ```js
-await sql().where({ id: 1 }).delete('users')
+await xsql().where({ id: 1 }).delete('users')
 ```
 
 ### Delete all rows of table
 ```js
-await sql().delete('users')
+await xsql().delete('users')
 ```
 ---
 
 ### Transaction
+- `Commit`\
+  When callback return
+- `Rollback`\
+  When error throw
 ```js
-// [User A] transfers $50 to [User B]
-const userA = 1
-const userB = 2
+// [Tom] transfers $50 to [Mary]
+const tomId = 1
+const maryId = 2
 const amount = 50;
-await sql().transaction(async (t) => {
-  const logAt = Date.now()
-  // Extract $50 from userA
+await xsql().transaction(async (t) => {
+  // Extract $50 from Tom
   await t()
-    .where(
-      { id: userA, wallet: amount }, 
-      { sumKey: ['wallet'] }
+    .where({ id: tomId })
+    .update(
+      'users', 
+      { wallet: -amount }, // <- negative number
+      { sumKey: ['wallet'] },
     )
-    .update('users')
 
-  // Deposit $50 into userB
+  // Read the value of Tom wallet
+  const [tom] = await t()
+    .where({ id: tomId })
+    .read('users')
+  
+  // Rollback when not enough money
+  if (tom.wallet < 0) {
+    throw new Error('Not enough money')
+  }
+
+  // Deposit $50 into Mary
   await t()
-    .where(
-      { id: userB, wallet: amount }, 
-      { sumKey: ['wallet'] }
+    .where({ id: maryId })
+    .update(
+      'users', 
+      { wallet: amount }, 
+      { sumKey: ['wallet'] },
     )
-    .update('users')
 
   // Log into database
+  const logAt = Date.now()
   await t().batchInsert('walletLogs', [
-    { type: 'EXTRACT', user: userA, change: -amount, logAt }
-    { type: 'DEPOSIT', user: userB, change: amount, logAt }
+    { type: 'EXTRACT', user: tomId, change: -amount, logAt }
+    { type: 'DEPOSIT', user: maryId, change: amount, logAt }
   ])
 })
 ```
