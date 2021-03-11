@@ -10,6 +10,7 @@ We are working in progress now!\
 - [🚀 Getting Start](#---getting-start)
 - [⚙️ Configuration](#---configuration)
 - [💖 Basic](#---basic)
+    + [Import](#import)
     + [Standard Query](#standard-query)
     + [Fallback Query](#fallback-query)
     + [Fetch from multiple host](#fetch-from-multiple-host)
@@ -88,9 +89,9 @@ Also this config options as same as mysql [connection options](https://github.co
   - `value`: The config of this `host` only, all config of this level will override the default config
 
 ```js
-const nsql = require('next-sql')
+const xsql = require('next-sql')
 // It will create PoolCluster for each hosts.
-nsql.init({
+xsql.init({
   // Each connection is created will use the following default config 
   port: 3306,
   connectionLimit: 5,
@@ -120,36 +121,41 @@ nsql.init({
 })
 ```
 # 💖 Basic
+### Import
 
-### Standard Query
 ```js
-const rows = await nsql().read('table')
+const xsql = require('next-sql')
+```
+### Standard Query
+
+```js
+const rows = await xsql().read('table')
 ```
 
 ### Fallback Query
 ```js
 // Will return the origin raw data from mysql node module
-const result = await nsql().query('SELECT * FROM `user` WHERE id = ?', [5])
+const result = await xsql().query('SELECT * FROM `user` WHERE id = ?', [5])
 ```
 
 ### Fetch from multiple host
 ```js
-const hostA_tableA_rows = await nsql('hostA').read('tableA')
-const hostB_tableB_rows = await nsql('hostB').read('tableB')
+const hostA_tableA_rows = await xsql('hostA').read('tableA')
+const hostB_tableB_rows = await xsql('hostB').read('tableB')
 ```
 
 ### Load module
 [How to build your own module](MODULE.md)
 ```js
 const thirdPartyModule = require('thirdPartyModule')
-nsql.loadModule(thirdPartyModule)
+xsql.loadModule(thirdPartyModule)
 ```
 
 # 📚 Examples
 
 ### Read all rows from users table
 ```js
-const users = await nsql().read('users')
+const users = await xsql().read('users')
 ```
 Equivalent to the following SQL statement
 ```sql
@@ -172,7 +178,7 @@ users = [
 ### Read single user
 __Example:__
 ```js
-const [ user ] = await nsql()
+const [ user ] = await xsql()
   .where({ id: 5 })
   .read('users')
 ```
@@ -209,7 +215,7 @@ You can focus more on business logic without worrying about creating SQL stateme
 
 __Example:__
 ```js
-const users = await nsql()
+const users = await xsql()
   .select('`name`, `age`, DATE_FORMAT(`birthAt`, "%Y") AS birthYear')
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
@@ -252,7 +258,7 @@ users = [
 ### Row filter
 __Example:__
 ```js
-const users = await nsql()
+const users = await xsql()
   .filter((row) => ({
     id: row.id,
     age: row.age,
@@ -291,7 +297,7 @@ users = [
 ### Group by and Order by
 __Example:__
 ```js
-const users = await nsql()
+const users = await xsql()
   .select('`gender`, AVG(`age`) AS averageAge')
   .groupBy('`gender`')
   .orderBy('`gender` DESC, `averageAge`')
@@ -317,7 +323,7 @@ users = [
 ### Limit and Offset
 __Example:__
 ```js
-const users = await nsql()
+const users = await xsql()
   .select('`id`, `name`')
   .limit(1)
   .offset(3)
@@ -351,7 +357,7 @@ __Demo:__
 
 __Example:__
 ```js
-const users = await nsql()
+const users = await xsql()
   .pagination({
     // The current page
     currPage: 2,
@@ -436,7 +442,7 @@ __Computers Table__ (Target Table)
 |----|-------|---------------|
 | 50 | Win10 | 192.168.0.123 |
 ```js
-await nsql()
+await xsql()
   .toOne('computer:computers.id')
   .read('users')
 ```
@@ -451,7 +457,7 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `nsql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
@@ -469,7 +475,7 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `nsql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
@@ -484,7 +490,7 @@ Parameters:
     Each incoming row will be replaced by this function,\
     async function is not allowed.
   - `query`: `(q) => {}`\
-    The `q` of the callback is a new instance of `nsql()`,\
+    The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
@@ -495,7 +501,7 @@ Parameters:
 
 #### Example
 ```js
-const users = await nsql()
+const users = await xsql()
   .filter(({ id, name, age }) => ({ id, name, age }))
   .toOne('computer:computers.id', {
     filter: ({ id, name, ip }) => ({ id, name, ip }),
@@ -586,7 +592,7 @@ const newUser = {
   computer: 56,
   pets: '69,70',
 }
-await nsql().insert('users', newUser)
+await xsql().insert('users', newUser)
 ```
 
 ### Insert multiple rows in batch mode
@@ -598,7 +604,7 @@ const newUsers = [
   { name: 'Foo', age: 28 },
   { name: 'Bar', age: 32 },
 ]
-await nsql().batchInsert('users', newUsers)
+await xsql().batchInsert('users', newUsers)
 ```
 
 ### Insert or update when exist in batch mode
@@ -620,7 +626,7 @@ const newComputers = [
   /* 🚫 Will update the wrong data due to different key order 🚫
   { ip: '192.168.1.124', name: 'Win10', id: 50, name } */
 ]
-await nsql().batchInsert('computers', newComputers, {
+await xsql().batchInsert('computers', newComputers, {
   primaryKey: 'id',
 })
 ```
@@ -634,7 +640,7 @@ const wallets = [
   { user: 1, cash: 50 }
   { user: 2, cash: -50 }
 ]
-await nsql().batchInsert('wallets', wallets, {
+await xsql().batchInsert('wallets', wallets, {
   primaryKey: 'user',
   sumKey: ['cash']
 })
@@ -642,7 +648,7 @@ await nsql().batchInsert('wallets', wallets, {
 ---
 ### Update Row
 ```js
-await nsql()
+await xsql()
   .where({ id: 1 })
   .update('users', {
     name: 'Tom',
@@ -651,7 +657,7 @@ await nsql()
 
 ### Update Row in summing mode
 ```js
-await nsql()
+await xsql()
   .where({ id: 1 })
   .update('users', {
     name: 'Tom',
@@ -663,18 +669,18 @@ await nsql()
 
 ### Update all rows of table
 ```js
-await nsql().update('users', { wallet: 0 })
+await xsql().update('users', { wallet: 0 })
 ```
 ---
 
 ### Delete Row
 ```js
-await nsql().where({ id: 1 }).delete('users')
+await xsql().where({ id: 1 }).delete('users')
 ```
 
 ### Delete all rows of table
 ```js
-await nsql().delete('users')
+await xsql().delete('users')
 ```
 ---
 
@@ -688,7 +694,7 @@ await nsql().delete('users')
 const tomId = 1
 const maryId = 2
 const amount = 50;
-await nsql().transaction(async (t) => {
+await xsql().transaction(async (t) => {
   // Extract $50 from Tom
   await t()
     .where({ id: tomId })

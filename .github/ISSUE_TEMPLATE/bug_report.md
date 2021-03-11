@@ -18,7 +18,7 @@ Like table data and javascript code.
 const data = []
 
 // The result
-const result = await nsql()
+const result = await xsql()
 
 // The output
 ```

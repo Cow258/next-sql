@@ -5,12 +5,12 @@
 // console.log(d.getTime())
 const util = require('util')
 
-const nsql = require('../lib/index')
+const xsql = require('../lib/index')
 
 require('console.table')
 // const is = require('../lib/is')
 
-nsql.init({
+xsql.init({
   defaultHost: 'test',
   hosts: {
     test: {
@@ -19,7 +19,7 @@ nsql.init({
       port: 23306,
       user: 'testuser',
       password: 'testpassword',
-      database: 'nsql_test',
+      database: 'xsql_test',
     },
     test2: {
       client: 'mysql',
@@ -27,14 +27,14 @@ nsql.init({
       port: 23306,
       user: 'testuser',
       password: 'testpassword',
-      database: 'nsql_test2',
+      database: 'xsql_test2',
     },
   },
 })
-console.log(util.inspect(nsql, false, null, true))
+console.log(util.inspect(xsql, false, null, true))
 
 
-const s = nsql()
+const s = xsql()
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
   .and(q => {
@@ -61,7 +61,7 @@ console.table('s.toRaw()', statement.toRaw())
 
 console.log('===================================')
 
-const statement2 = nsql().toStatement('update', 'users', {
+const statement2 = xsql().toStatement('update', 'users', {
   name: 'Mary',
   cash: 50,
   createAt: new Date(),
@@ -88,19 +88,19 @@ console.log('===================================')
 
 async function main() {
 
-  const newUser = await nsql().insert('users', {
+  const newUser = await xsql().insert('users', {
     name: 'Mary',
     createAt: Date.now(),
   })
   console.log(newUser)
 
-  // await nsql()
+  // await xsql()
   //   .where({ id: newUser.insertId })
   //   .update('users', {
   //     flag: 5,
   //   })
 
-  // const users = await nsql()
+  // const users = await xsql()
   //   // .where(q => {
   //   //   q.where('id', 'in', [2, 3])
   //   // })
@@ -112,7 +112,7 @@ async function main() {
   //   .read('users')
   // console.table(users)
 
-  // await nsql().transaction(async (t) => {
+  // await xsql().transaction(async (t) => {
   //   const { insertId } = await t().insert('users', {
   //     name: 'Test3',
   //     createAt: Date.now(),
@@ -145,7 +145,7 @@ main()
 //   },
 // })
 
-// const a = nsql()
+// const a = xsql()
 // const b = a.where()
 
 // console.log({
@@ -157,11 +157,11 @@ main()
 // })
 
 
-// const a = nsql().where(q => {
+// const a = xsql().where(q => {
 //   console.log(q)
 //   console.log(q._conditions)
 // })
-// const b = nsql().where(q => {
+// const b = xsql().where(q => {
 //   console.log(q)
 //   console.log(q._conditions)
 
@@ -178,7 +178,7 @@ main()
 
 // })
 
-// nsql().transaction(async (t) => {
+// xsql().transaction(async (t) => {
 //   await t().where()
 //   t().where()
 // })
