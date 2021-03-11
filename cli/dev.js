@@ -5,12 +5,12 @@
 // console.log(d.getTime())
 const util = require('util')
 
-const xsql = require('../lib/index')
+const nsql = require('../lib/index')
 
 require('console.table')
 // const is = require('../lib/is')
 
-xsql.init({
+nsql.init({
   defaultHost: 'test',
   hosts: {
     test: {
@@ -19,7 +19,7 @@ xsql.init({
       port: 23306,
       user: 'testuser',
       password: 'testpassword',
-      database: 'xsql_test',
+      database: 'nsql_test',
     },
     test2: {
       client: 'mysql',
@@ -27,14 +27,14 @@ xsql.init({
       port: 23306,
       user: 'testuser',
       password: 'testpassword',
-      database: 'xsql_test2',
+      database: 'nsql_test2',
     },
   },
 })
-console.log(util.inspect(xsql, false, null, true))
+console.log(util.inspect(nsql, false, null, true))
 
 
-const s = xsql()
+const s = nsql()
   .where({ isActive: 1, isEnable: 1 })
   .where('pets', 'NOT', null)
   .and(q => {
@@ -61,7 +61,7 @@ console.table('s.toRaw()', statement.toRaw())
 
 console.log('===================================')
 
-const statement2 = xsql().toStatement('update', 'users', {
+const statement2 = nsql().toStatement('update', 'users', {
   name: 'Mary',
   cash: 50,
   createAt: new Date(),
@@ -88,19 +88,19 @@ console.log('===================================')
 
 async function main() {
 
-  // const newUser = await sql().insert('users', {
-  //   name: 'Sam',
-  //   createAt: Date.now(),
-  // })
-  // console.log(newUser)
+  const newUser = await nsql().insert('users', {
+    name: 'Mary',
+    createAt: Date.now(),
+  })
+  console.log(newUser)
 
-  // await sql()
+  // await nsql()
   //   .where({ id: newUser.insertId })
   //   .update('users', {
   //     flag: 5,
   //   })
 
-  // const users = await sql()
+  // const users = await nsql()
   //   // .where(q => {
   //   //   q.where('id', 'in', [2, 3])
   //   // })
@@ -112,17 +112,17 @@ async function main() {
   //   .read('users')
   // console.table(users)
 
-  await xsql().transaction(async (t) => {
-    const { insertId } = await t().insert('users', {
-      name: 'Test3',
-      createAt: Date.now(),
-    })
-    await t().insert('users', {
-      id: insertId,
-      name: 'Test4',
-      createAt: Date.now(),
-    })
-  })
+  // await nsql().transaction(async (t) => {
+  //   const { insertId } = await t().insert('users', {
+  //     name: 'Test3',
+  //     createAt: Date.now(),
+  //   })
+  //   await t().insert('users', {
+  //     id: insertId,
+  //     name: 'Test4',
+  //     createAt: Date.now(),
+  //   })
+  // })
 
 
   process.exit()
@@ -145,7 +145,7 @@ main()
 //   },
 // })
 
-// const a = sql()
+// const a = nsql()
 // const b = a.where()
 
 // console.log({
@@ -157,11 +157,11 @@ main()
 // })
 
 
-// const a = sql().where(q => {
+// const a = nsql().where(q => {
 //   console.log(q)
 //   console.log(q._conditions)
 // })
-// const b = sql().where(q => {
+// const b = nsql().where(q => {
 //   console.log(q)
 //   console.log(q._conditions)
 
@@ -178,7 +178,7 @@ main()
 
 // })
 
-// sql().transaction(async (t) => {
+// nsql().transaction(async (t) => {
 //   await t().where()
 //   t().where()
 // })

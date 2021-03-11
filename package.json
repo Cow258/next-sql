@@ -1,5 +1,5 @@
 {
-  "name": "xsql",
+  "name": "next-sql",
   "version": "0.0.1",
   "description": "Next-gen SQL connector, easy way to query SQL and create relationship linked object.",
   "keywords": [
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/cow258/xsql"
+    "url": "git://github.com/cow258/next-sql"
   },
   "scripts": {
     "dev": "node ./cli/dev",
