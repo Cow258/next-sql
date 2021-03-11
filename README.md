@@ -375,61 +375,59 @@ users = [...UserObject]
 
 /*
 Case 1: Normal
-    Current Page : 2
-     Total users : 50
-Range of user id : 11 to 20
+    Current Page : 5
+     Total users : 100
+Range of user id : 41 to 50
 */
 users.pagination = {
   isOutOfRange: false,
-  currPage: 2,
+  currPage: 6,
   rowStep: 10,
   navStep: 4,
-  row: {
-    from: 11,
-    to: 20,
-  },
-  page: {
-    from: 1,
-    curr: 2,
-    to: 4,
+  row: { from: 51, to: 60, fromIndex: 50, toIndex: 59 },
+  page: { from: 5, current: 6, to: 8, hasPrev: true, hasNext: true },
+  nav: {
+    current: 2,
     hasPrev: true,
     hasNext: true,
-  },
-  nav: {
-    hasPrev: false,
-    hasNext: true,
     buttons: [
-      { page: null, enable: false, className: 'nav prev disabled' },
-      { page: 1, enable: true, className: 'page prev' },
-      { page: 1, enable: true, className: 'page' },
-      { page: 2, enable: false, className: 'page curr active' },
-      { page: 3, enable: true, className: 'page' },
-      { page: 4, enable: true, className: 'page' },
-      { page: 3, enable: true, className: 'page next' },
-      { page: 5, enable: true, className: 'nav next' },
-    ],
-  },
+      { value: 5, label: '«', className: 'page-prev' },
+      { value: 4, label: '...', className: 'nav-prev' },
+      { value: 5, label: '5', className: '' },
+      { value: 6, label: '6', className: 'current active' },
+      { value: 7, label: '7', className: '' },
+      { value: 8, label: '8', className: '' },
+      { value: 9, label: '...', className: 'nav-next' },
+      { value: 7, label: '»', className: 'page-next' }
+    ]
+  }
 }
 
 /*
 Case 2: Out of range
-    Current Page : 6
-     Total users : 50
+    Current Page : 11
+     Total users : 100
 Range of user id : ---
 */
 users.pagination = {
   isOutOfRange: true,
-  currPage: 6,
+  currPage: 11,
   rowStep: 10,
   navStep: 4,
-  hasPrev: true,
-  hasNext: false,
+  row: { from: 101, to: 110, fromIndex: 100, toIndex: 109 },
+  page: { from: 9, current: 11, to: 10, hasPrev: true, hasNext: false },
   nav: {
-    start: 5,
-    end: 5,
-    hasPrev: false,
+    current: 3,
+    hasPrev: true,
     hasNext: false,
-  },
+    buttons: [
+      { value: 10, label: '«', className: 'page-prev' },
+      { value: 8, label: '...', className: 'nav-prev' },
+      { value: 9, label: '9', className: '' },
+      { value: 10, label: '10', className: '' },
+      { value: 12, label: '»', className: 'page-next disabled' }
+    ]
+  }
 }
 ```
 
@@ -645,7 +643,7 @@ const newComputers = [
   { ip: '192.168.1.124', name: 'Win10', id: 50, name } */
 ]
 await xsql().batchInsert('computers', newComputers, {
-  primaryKey: 'id',
+  primaryKeys: 'id',
 })
 ```
 
@@ -659,8 +657,8 @@ const wallets = [
   { user: 2, cash: -50 }
 ]
 await xsql().batchInsert('wallets', wallets, {
-  primaryKey: 'user',
-  sumKey: ['cash']
+  primaryKeys: 'user',
+  sumKeys: ['cash']
 })
 ```
 ---
@@ -681,7 +679,7 @@ await xsql()
     name: 'Tom',
     cash: 50,
   }, {
-    sumKey: ['cash']
+    sumKeys: ['cash']
   })
 ```
 
@@ -719,7 +717,7 @@ await xsql().transaction(async (t) => {
     .update(
       'users', 
       { wallet: -amount }, // <- negative number
-      { sumKey: ['wallet'] },
+      { sumKeys: ['wallet'] },
     )
 
   // Read the value of Tom wallet
@@ -738,7 +736,7 @@ await xsql().transaction(async (t) => {
     .update(
       'users', 
       { wallet: amount }, 
-      { sumKey: ['wallet'] },
+      { sumKeys: ['wallet'] },
     )
 
   // Log into database

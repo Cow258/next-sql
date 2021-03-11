@@ -1,6 +1,6 @@
 {
   "name": "next-sql",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Next-gen SQL connector, easy way to query SQL and create relationship linked object.",
   "keywords": [
     "sql",
@@ -35,7 +35,8 @@
     "db:stop": "docker-compose -f cli/docker-compose.yml down"
   },
   "dependencies": {
-    "chalk": "^4.1.0"
+    "chalk": "^4.1.0",
+    "classnames": "^2.2.6"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
