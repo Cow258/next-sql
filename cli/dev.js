@@ -34,42 +34,42 @@ xsql.init({
 console.log(util.inspect(xsql, false, null, true))
 
 
-const s = xsql()
-  .where({ isActive: 1, isEnable: 1 })
-  .where('pets', 'NOT', null)
-  .and(q => {
-    q.or(() => {
-      q.and('age', 'between', [40, 45])
-      q.and('age', 'between', [50, 60])
-    })
-    q.or('age', 'between', [18, 25])
-    q.or(() => {
-      q.and('age', 'between', [40, 45])
-      q.and('age', 'between', [50, 60])
-    })
-  })
-  .limit(5)
-  .offset(15)
-  .orderBy('id desc')
-  .groupBy('type')
-const { conditions, ...state } = s._state
-console.table('state', state)
-console.table('conditions', conditions)
-const statement = s.toStatement('read', 'users')
-console.log('s.toStatement()', statement)
-console.table('s.toRaw()', statement.toRaw())
+// const s = xsql()
+//   .where({ isActive: 1, isEnable: 1 })
+//   .where('pets', 'NOT', null)
+//   .and(q => {
+//     q.or(() => {
+//       q.and('age', 'between', [40, 45])
+//       q.and('age', 'between', [50, 60])
+//     })
+//     q.or('age', 'between', [18, 25])
+//     q.or(() => {
+//       q.and('age', 'between', [40, 45])
+//       q.and('age', 'between', [50, 60])
+//     })
+//   })
+//   .limit(5)
+//   .offset(15)
+//   .orderBy('id desc')
+//   .groupBy('type')
+// const { conditions, ...state } = s._state
+// console.table('state', state)
+// console.table('conditions', conditions)
+// const statement = s.toStatement('read', 'users')
+// console.log('s.toStatement()', statement)
+// console.table('s.toRaw()', statement.toRaw())
 
-console.log('===================================')
+// console.log('===================================')
 
-const statement2 = xsql().toStatement('update', 'users', {
-  name: 'Mary',
-  cash: 50,
-  createAt: new Date(),
-})
-console.log('s2.toStatement()', statement2)
-console.table('s2.toRaw()', statement2.toRaw())
+// const statement2 = xsql().toStatement('update', 'users', {
+//   name: 'Mary',
+//   cash: 50,
+//   createAt: new Date(),
+// })
+// console.log('s2.toStatement()', statement2)
+// console.table('s2.toRaw()', statement2.toRaw())
 
-console.log('===================================')
+// console.log('===================================')
 
 
 
@@ -88,11 +88,11 @@ console.log('===================================')
 
 async function main() {
 
-  const newUser = await xsql().insert('users', {
-    name: 'Mary',
-    createAt: Date.now(),
-  })
-  console.log(newUser)
+  // const newUser = await xsql().insert('users', {
+  //   name: 'Mary',
+  //   createAt: Date.now(),
+  // })
+  // console.log(newUser)
 
   // await xsql()
   //   .where({ id: newUser.insertId })
@@ -124,6 +124,33 @@ async function main() {
   //   })
   // })
 
+  const rows = []
+  for (let i = 1; i <= 100; i++) {
+    rows.push({
+      index: i,
+    })
+  }
+  await xsql().delete('test')
+  await xsql().batchInsert('test', rows)
+  const tests = await xsql()
+    .pagination({
+      currPage: 6,
+      navStep: 4,
+    })
+    .read('test')
+  const { eof, pagination } = tests
+  console.log(util.inspect({
+    tests,
+    eof,
+    pagination,
+  }, false, null, true))
+  // const test = xsql().pagination({
+  //   currPage: 4,
+  //   rowStep: 10,
+  //   navStep: 4,
+  // })
+
+  // paginationAfter(rows, test._state)
 
   process.exit()
 }
