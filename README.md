@@ -6,15 +6,15 @@ We are working in progress now!\
 
 [See more detail here](https://github.com/Cow258/next-sql/projects/1)
 # Table of content
-- [Introduction](#introduction)
-- [Getting Start](#getting-start)
-- [Configuration](#configuration)
-- [Basic](#basic)
+- [🎉 Introduction](#---introduction)
+- [🚀 Getting Start](#---getting-start)
+- [⚙️ Configuration](#---configuration)
+- [💖 Basic](#---basic)
     + [Standard Query](#standard-query)
     + [Fallback Query](#fallback-query)
     + [Fetch from multiple host](#fetch-from-multiple-host)
     + [Load module](#load-module)
-- [Examples](#examples)
+- [📚 Examples](#---examples)
     + [Read all rows from users table](#read-all-rows-from-users-table)
     + [Read single user](#read-single-user)
     + [Advanced query](#advanced-query)
@@ -57,7 +57,7 @@ We are working in progress now!\
 - Module customization
 - Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
-> 🏃🏻‍♂️ Working on progress...
+> 🏃🏻‍♂️ Working on progress...\
 > [See more detail](https://github.com/Cow258/next-sql/projects)
 > - Module customization
 > - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
@@ -65,11 +65,11 @@ We are working in progress now!\
 
 # 🚀 Getting Start
 ```sh
-npm i nsql
+npm i next-sql
 ```
 OR
 ```sh
-yarn add nsql
+yarn add next-sql
 ```
 
 # ⚙️ Configuration
@@ -88,9 +88,9 @@ Also this config options as same as mysql [connection options](https://github.co
   - `value`: The config of this `host` only, all config of this level will override the default config
 
 ```js
-const sql = require('next-sql')
+const nsql = require('next-sql')
 // It will create PoolCluster for each hosts.
-sql.init({
+nsql.init({
   // Each connection is created will use the following default config 
   port: 3306,
   connectionLimit: 5,
@@ -142,7 +142,7 @@ const hostB_tableB_rows = await nsql('hostB').read('tableB')
 [How to build your own module](MODULE.md)
 ```js
 const thirdPartyModule = require('thirdPartyModule')
-sql.loadModule(thirdPartyModule)
+nsql.loadModule(thirdPartyModule)
 ```
 
 # 📚 Examples
@@ -418,7 +418,7 @@ users.pagination = {
 
 #### Mapper syntax
 `{currentKey}`__:__`{targetTable}`__.__`{targetKey}`
-- `currentKey`: The key of current table you want the map
+- `currentKey`: The key of current table you want to map
 - `targetTable`: Which table do you want to map?
 - `targetKey`: The key of the targer table
 
