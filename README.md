@@ -1,5 +1,10 @@
 
 # next-sql
+💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻\
+We are working in progress now!\
+🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️
+
+[See more detail here](https://github.com/Cow258/next-sql/projects/1)
 # Table of content
 - [Introduction](#introduction)
 - [Getting Start](#getting-start)
@@ -53,6 +58,7 @@
 - Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
 > 🏃🏻‍♂️ Working on progress...
+> [See more detail](https://github.com/Cow258/next-sql/projects)
 > - Module customization
 > - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
 > - To support One from Many
