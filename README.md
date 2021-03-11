@@ -380,16 +380,34 @@ Case 1: Normal
 Range of user id : 11 to 20
 */
 users.pagination = {
+  isOutOfRange: false,
   currPage: 2,
   rowStep: 10,
   navStep: 4,
-  hasPrev: true,
-  hasNext: true,
+  row: {
+    from: 11,
+    to: 20,
+  },
+  page: {
+    from: 1,
+    curr: 2,
+    to: 4,
+    hasPrev: true,
+    hasNext: true,
+  },
   nav: {
-    start: 1,
-    end: 4,
     hasPrev: false,
     hasNext: true,
+    buttons: [
+      { page: null, enable: false, className: 'nav prev disabled' },
+      { page: 1, enable: true, className: 'page prev' },
+      { page: 1, enable: true, className: 'page' },
+      { page: 2, enable: false, className: 'page curr active' },
+      { page: 3, enable: true, className: 'page' },
+      { page: 4, enable: true, className: 'page' },
+      { page: 3, enable: true, className: 'page next' },
+      { page: 5, enable: true, className: 'nav next' },
+    ],
   },
 }
 
