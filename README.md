@@ -1,5 +1,5 @@
 
-# nSQL
+# next-sql
 # Table of content
 - [Introduction](#introduction)
 - [Getting Start](#getting-start)
@@ -36,7 +36,7 @@
     + [Transaction](#transaction)
 
 # 🎉 Introduction
-`nSQL` is next-gen relationship database connector.
+`next-sql` is next-gen relationship database connector.
 
 - Easy to use
 - Write less, Do more
@@ -82,7 +82,7 @@ Also this config options as same as mysql [connection options](https://github.co
   - `value`: The config of this `host` only, all config of this level will override the default config
 
 ```js
-const sql = require('nsql')
+const sql = require('next-sql')
 // It will create PoolCluster for each hosts.
 sql.init({
   // Each connection is created will use the following default config 
