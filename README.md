@@ -42,7 +42,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
     + [Delete all rows of table](#delete-all-rows-of-table)
     + [Transaction](#transaction)
 
-# 🎉 Introduction {#introduction}
+# 🎉 Introduction <a name="introduction"></a>
 `next-sql` is next-gen relationship database connector.
 
 - Easy to use
@@ -65,7 +65,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
 > - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
 > - To support One from Many
 
-# 🚀 Getting Start {#getting-start}
+# 🚀 Getting Start <a name="getting-start"></a>
 ```sh
 npm i -D next-sql
 ```
@@ -74,7 +74,7 @@ OR
 yarn add next-sql
 ```
 
-# ⚙️ Configuration {configuration}
+# ⚙️ Configuration <a name="configuration"></a>
 We will pass your config into `mysql` directly.\
 You can find more detail from the following link\
 https://github.com/mysqljs/mysql#connection-options\
@@ -121,7 +121,7 @@ xsql.init({
   }
 })
 ```
-# 💖 Basic {#basic}
+# 💖 Basic <a name="basic"></a>
 ### Import
 
 ```js
@@ -154,7 +154,7 @@ const thirdPartyModule = require('thirdPartyModule')
 xsql.loadModule(thirdPartyModule)
 ```
 
-# 📚 Examples {#examples}
+# 📚 Examples <a name="examples"></a>
 
 ### Read all rows from users table
 ```js
@@ -490,7 +490,7 @@ await xsql()
   .read('users')
 ```
 
-#### toOne(mapper, options) {#toone}
+#### toOne(mapper, options) <a name="toone"></a>
 Each row linked to one foreign item
 
 Parameters:
@@ -504,7 +504,7 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### toMany(mapper, options) {#tomany}
+#### toMany(mapper, options) <a name="tomany"></a>
 Each row linked to many foreign items
 
 Parameters:
@@ -523,7 +523,7 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### fromOne(addonKey, mapper, options) {#fromone}
+#### fromOne(addonKey, mapper, options) <a name="fromone"></a>
 Each foreign items linked to one current row
 
 Parameters:
@@ -538,12 +538,12 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### fromMany() {#frommany}
+#### fromMany() <a name="frommany"></a>
 > __🔄 Coming Soon...__\
 > Not supported at this moment.\
 > Maybe it will be supported in some days of the future.
 
-#### Example {##relationship-example}
+#### Example <a name="relationship-example"></a>
 ```js
 const users = await xsql()
   .filter(({ id, name, age }) => ({ id, name, age }))
@@ -699,7 +699,7 @@ await xsql()
   })
 ```
 
-### Update Single Row in summing mode {#update-single-sum}
+### Update Single Row in summing mode <a name="update-single-sum"></a>
 > ⚠️ Not yet support in this moment
 
 > 🏃🏻‍♂️ Working on progress...
