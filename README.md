@@ -1,21 +1,22 @@
 
 # next-sql
-💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻💪🏻\
-We are working in progress now!\
-🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️
+> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
+> The project is still in the pre-alpha stage\
+> 🏃🏻‍♂️ We are working in progress now... 💪🏻
 
-[See more detail here](https://github.com/Cow258/next-sql/projects/1)
+For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/projects/1)
+
 # Table of content
-- [🎉 Introduction](#---introduction)
-- [🚀 Getting Start](#---getting-start)
-- [⚙️ Configuration](#---configuration)
-- [💖 Basic](#---basic)
+- [🎉 Introduction](#introduction)
+- [🚀 Getting Start](#getting-start)
+- [⚙️ Configuration](#configuration)
+- [💖 Basic](#basic)
     + [Import](#import)
     + [Standard Query](#standard-query)
     + [Fallback Query](#fallback-query)
     + [Fetch from multiple host](#fetch-from-multiple-host)
     + [Load module](#load-module)
-- [📚 Examples](#---examples)
+- [📚 Examples](#examples)
     + [Read all rows from users table](#read-all-rows-from-users-table)
     + [Read single user](#read-single-user)
     + [Advanced query](#advanced-query)
@@ -25,23 +26,23 @@ We are working in progress now!\
     + [Pagination](#pagination)
     + [Relationship](#relationship)
       - [Mapper syntax](#mapper-syntax)
-      - [toOne(mapper, options)](#toone-mapper--options-)
-      - [toMany(mapper, options)](#tomany-mapper--options-)
-      - [fromOne(addonKey, mapper, options)](#fromone-addonkey--mapper--options-)
-      - [fromMany()](#frommany--)
-      - [Example](#example)
+      - [toOne(mapper, options)](#toone)
+      - [toMany(mapper, options)](#tomany)
+      - [fromOne(addonKey, mapper, options)](#fromone)
+      - [fromMany()](#frommany)
+      - [Example](#relationship-example)
     + [Insert Row](#insert-row)
     + [Insert multiple rows in batch mode](#insert-multiple-rows-in-batch-mode)
     + [Insert or update when exist in batch mode](#insert-or-update-when-exist-in-batch-mode)
     + [Insert or update when exist in batch summing mode](#insert-or-update-when-exist-in-batch-summing-mode)
     + [Update Row](#update-row)
-    + [Update Row in summing mode](#update-row-in-summing-mode)
+    + [Update Single Row in summing mode](#update-single-sum)
     + [Update all rows of table](#update-all-rows-of-table)
     + [Delete Row](#delete-row)
     + [Delete all rows of table](#delete-all-rows-of-table)
     + [Transaction](#transaction)
 
-# 🎉 Introduction
+# 🎉 Introduction {#introduction}
 `next-sql` is next-gen relationship database connector.
 
 - Easy to use
@@ -59,24 +60,24 @@ We are working in progress now!\
 - Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
 > 🏃🏻‍♂️ Working on progress...\
-> [See more detail](https://github.com/Cow258/next-sql/projects)
+> [See our roadmap](https://github.com/Cow258/next-sql/projects)
 > - Module customization
 > - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
 > - To support One from Many
 
-# 🚀 Getting Start
+# 🚀 Getting Start {#getting-start}
 ```sh
-npm i next-sql
+npm i -D next-sql
 ```
 OR
 ```sh
 yarn add next-sql
 ```
 
-# ⚙️ Configuration
+# ⚙️ Configuration {configuration}
 We will pass your config into `mysql` directly.\
 You can find more detail from the following link\
-https://github.com/mysqljs/mysql#connection-options
+https://github.com/mysqljs/mysql#connection-options\
 https://github.com/mysqljs/mysql#pool-options
 
 __Options:__\
@@ -120,7 +121,7 @@ xsql.init({
   }
 })
 ```
-# 💖 Basic
+# 💖 Basic {#basic}
 ### Import
 
 ```js
@@ -145,13 +146,15 @@ const hostB_tableB_rows = await xsql('hostB').read('tableB')
 ```
 
 ### Load module
-[How to build your own module](MODULE.md)
+> ⚠️ Not yet support in this moment
+
+> 🏃🏻‍♂️ Working on progress...
 ```js
 const thirdPartyModule = require('thirdPartyModule')
 xsql.loadModule(thirdPartyModule)
 ```
 
-# 📚 Examples
+# 📚 Examples {#examples}
 
 ### Read all rows from users table
 ```js
@@ -348,8 +351,8 @@ users = [
 Automatically manage pagination.
 
 __Demo:__
-- [React]()
-- [Handlebar]()
+- Next.js (React) `🏃🏻‍♂️ Working on progress...`
+- Node.js + Express `🏃🏻‍♂️ Working on progress...`
 
 > Will override the `limit()` and `offset()` settings!
 
@@ -456,6 +459,12 @@ users.pagination = {
 - Construct the data model directly from the query
 - Non-blocking asynchronous table rows mapper
 
+> 🏃🏻‍♂️ Working on progress...
+
+> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
+> Currently, The `options.splitter` of `toMany()` not yet support JSON.\
+> (Will support soon...)
+
 #### Mapper syntax
 `{currentKey}`__:__`{targetTable}`__.__`{targetKey}`
 - `currentKey`: The key of current table you want to map
@@ -481,7 +490,7 @@ await xsql()
   .read('users')
 ```
 
-#### toOne(mapper, options)
+#### toOne(mapper, options) {#toone}
 Each row linked to one foreign item
 
 Parameters:
@@ -495,7 +504,7 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### toMany(mapper, options)
+#### toMany(mapper, options) {#tomany}
 Each row linked to many foreign items
 
 Parameters:
@@ -504,7 +513,8 @@ Parameters:
   - `splitter`: `','` || `'json[]'` || `'json.key'`\
     You can customize the separation character,\
     or using `JSON` to provide the mapping data.\
-    `JSON` must eventually return `string[]` or `number[]` or `null`
+    `JSON` must eventually return `string[]` or `number[]` or `null`\
+    (⚠️ Will support `JSON` soon...)
   - `filter`: `(row) => (row)`\
     Each incoming row will be replaced by this function,\
     async function is not allowed.
@@ -513,7 +523,7 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### fromOne(addonKey, mapper, options)
+#### fromOne(addonKey, mapper, options) {#fromone}
 Each foreign items linked to one current row
 
 Parameters:
@@ -528,12 +538,12 @@ Parameters:
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
 
-#### fromMany()
+#### fromMany() {#frommany}
 > __🔄 Coming Soon...__\
 > Not supported at this moment.\
 > Maybe it will be supported in some days of the future.
 
-#### Example
+#### Example {##relationship-example}
 ```js
 const users = await xsql()
   .filter(({ id, name, age }) => ({ id, name, age }))
@@ -689,7 +699,10 @@ await xsql()
   })
 ```
 
-### Update Row in summing mode
+### Update Single Row in summing mode {#update-single-sum}
+> ⚠️ Not yet support in this moment
+
+> 🏃🏻‍♂️ Working on progress...
 ```js
 await xsql()
   .where({ id: 1 })
