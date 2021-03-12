@@ -134,7 +134,7 @@ async function main() {
   await xsql().batchInsert('test', rows)
   const tests = await xsql()
     .pagination({
-      currPage: 6,
+      currPage: 11,
       navStep: 4,
     })
     .read('test')

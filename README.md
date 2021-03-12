@@ -375,17 +375,26 @@ users = [...UserObject]
 
 /*
 Case 1: Normal
-    Current Page : 5
+    Current Page : 6
      Total users : 100
-Range of user id : 41 to 50
+Range of user id : 51 to 60
 */
 users.pagination = {
   isOutOfRange: false,
   currPage: 6,
   rowStep: 10,
   navStep: 4,
-  row: { from: 51, to: 60, fromIndex: 50, toIndex: 59 },
-  page: { from: 5, current: 6, to: 8, hasPrev: true, hasNext: true },
+  row: {
+    record: { from: 51, to: 60 },
+    index: { from: 50, to: 59 }
+    },
+  page: {
+    from: 5,
+    current: 6,
+    to: 8,
+    hasPrev: true,
+    hasNext: true,
+  },
   nav: {
     current: 2,
     hasPrev: true,
@@ -414,8 +423,17 @@ users.pagination = {
   currPage: 11,
   rowStep: 10,
   navStep: 4,
-  row: { from: 101, to: 110, fromIndex: 100, toIndex: 109 },
-  page: { from: 9, current: 11, to: 10, hasPrev: true, hasNext: false },
+  row: {
+    record: { from: 101, to: 110 },
+    index: { from: 100, to: 109 },
+  },
+  page: {
+    from: 9,
+    current: 11,
+    to: 10,
+    hasPrev: true,
+    hasNext: false,
+  },
   nav: {
     current: 3,
     hasPrev: true,
