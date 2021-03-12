@@ -67,7 +67,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
 
 # 🚀 Getting Start <a name="getting-start"></a>
 ```sh
-npm i -D next-sql
+npm i -S next-sql
 ```
 OR
 ```sh
