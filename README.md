@@ -77,7 +77,9 @@ yarn add next-sql
 # ⚙️ Configuration <a name="configuration"></a>
 We will pass your config into `mysql` directly.\
 You can find more detail from the following link\
-https://github.com/mysqljs/mysql#connection-options\
+
+https://github.com/mysqljs/mysql#connection-options
+
 https://github.com/mysqljs/mysql#pool-options
 
 __Options:__\
