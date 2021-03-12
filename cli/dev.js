@@ -10,6 +10,16 @@ const xsql = require('../lib/index')
 require('console.table')
 // const is = require('../lib/is')
 
+function xlog(obj) {
+  console.log(
+    util.inspect(
+      JSON.parse(
+        JSON.stringify(obj)
+      ), false, null, true
+    )
+  )
+}
+
 xsql.init({
   defaultHost: 'test',
   hosts: {
@@ -31,7 +41,7 @@ xsql.init({
     },
   },
 })
-console.log(util.inspect(xsql, false, null, true))
+// console.log(util.inspect(xsql, false, null, true))
 
 
 // const s = xsql()
@@ -124,26 +134,67 @@ async function main() {
   //   })
   // })
 
-  const rows = []
-  for (let i = 1; i <= 100; i++) {
-    rows.push({
-      index: i,
+
+  // Pagination Test
+  // const rows = []
+  // for (let i = 1; i <= 100; i++) {
+  //   rows.push({
+  //     index: i,
+  //   })
+  // }
+  // await xsql().delete('test')
+  // await xsql().batchInsert('test', rows)
+  // const tests = await xsql()
+  //   .pagination({
+  //     currPage: 11,
+  //     navStep: 4,
+  //   })
+  //   .read('test')
+  // const { eof, pagination } = tests
+  // console.log(util.inspect({
+  //   tests,
+  //   eof,
+  //   pagination,
+  // }, false, null, true))
+
+
+  // Relationship test
+  // const reg = /^(.+):(.+)\.(.+)$/g
+  // const str = 'computer:computers.id'
+  // const [
+  //   ,
+  //   currentKey,
+  //   targetTable,
+  //   targetKey,
+  // ] = reg.exec(str)
+  // console.log([
+  //   str.match(reg),
+  //   reg.exec(str),
+  //   reg.test(str),
+  //   currentKey,
+  //   targetTable,
+  //   targetKey,
+  // ])
+
+  // const m = 'computer:computers.id'.match(/^(.+):(.+)\.(.+)$/g)
+  // console.log(m)
+
+  const users = await xsql()
+    .toOne('computer:computers.id')
+    .toMany('pets:pets.id')
+    .fromOne('cars', 'id:cars.user', {
+      // query: (q) => {
+      //   q.toOne('brand:brands.id')
+      // },
     })
-  }
-  await xsql().delete('test')
-  await xsql().batchInsert('test', rows)
-  const tests = await xsql()
-    .pagination({
-      currPage: 11,
-      navStep: 4,
-    })
-    .read('test')
-  const { eof, pagination } = tests
-  console.log(util.inspect({
-    tests,
-    eof,
-    pagination,
-  }, false, null, true))
+    // .where({ id: 1 })
+    .read('users')
+  xlog(users)
+
+
+
+
+
   // const test = xsql().pagination({
   //   currPage: 4,
   //   rowStep: 10,
