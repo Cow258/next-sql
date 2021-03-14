@@ -150,10 +150,20 @@ async function main() {
   })
   const tests = await xsql()
     .pagination({
-      currPage: 11,
+      currPage: 6,
       navStep: 4,
     })
-    .read('test')
+    .filter(async (row) => {
+      return (new Promise((res) => {
+        setTimeout(() => {
+          row.pets = [...row.pets, 9]
+          res(row)
+        }, 50)
+      }))
+    })
+    .read('test', {
+      jsonKeys: 'pets',
+    })
   const { eof, pagination } = tests
   console.log(util.inspect({
     tests,
