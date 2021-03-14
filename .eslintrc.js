@@ -74,6 +74,7 @@ module.exports = {
     'quote-props': ['error', 'as-needed'],
     'eol-last': ['error', 'always'],
     'no-await-in-loop': 0,
+    'no-trailing-spaces': 2,
     'jest/expect-expect': 'off',
     'jest/no-disabled-tests': 'off',
     'import/newline-after-import': 0,

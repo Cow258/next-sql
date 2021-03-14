@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable vars-on-top */
 /* eslint-disable no-redeclare */
 /* eslint-disable no-var */
@@ -136,26 +137,29 @@ async function main() {
 
 
   // Pagination Test
-  // const rows = []
-  // for (let i = 1; i <= 100; i++) {
-  //   rows.push({
-  //     index: i,
-  //   })
-  // }
-  // await xsql().delete('test')
-  // await xsql().batchInsert('test', rows)
-  // const tests = await xsql()
-  //   .pagination({
-  //     currPage: 11,
-  //     navStep: 4,
-  //   })
-  //   .read('test')
-  // const { eof, pagination } = tests
-  // console.log(util.inspect({
-  //   tests,
-  //   eof,
-  //   pagination,
-  // }, false, null, true))
+  const rows = []
+  for (let i = 1; i <= 100; i++) {
+    rows.push({
+      index: i,
+      pets: [1, 2],
+    })
+  }
+  await xsql().delete('test')
+  await xsql().batchInsert('test', rows, {
+    jsonKeys: 'pets',
+  })
+  const tests = await xsql()
+    .pagination({
+      currPage: 11,
+      navStep: 4,
+    })
+    .read('test')
+  const { eof, pagination } = tests
+  console.log(util.inspect({
+    tests,
+    eof,
+    pagination,
+  }, false, null, true))
 
 
   // Relationship test
@@ -192,16 +196,14 @@ async function main() {
   // xlog(users)
 
 
-
-
-
-  // const test = xsql().pagination({
-  //   currPage: 4,
-  //   rowStep: 10,
-  //   navStep: 4,
+  // JSON Support
+  // await xsql().insert('users', {
+  //   name: 'Jason',
+  //   createAt: Date.now(),
+  //   pets: [1, 2],
+  // }, {
+  //   jsonKeys: 'pets',
   // })
-
-  // paginationAfter(rows, test._state)
 
   process.exit()
 }
