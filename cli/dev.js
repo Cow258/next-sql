@@ -179,17 +179,17 @@ async function main() {
   // const m = 'computer:computers.id'.match(/^(.+):(.+)\.(.+)$/g)
   // console.log(m)
 
-  const users = await xsql()
-    .toOne('computer:computers.id')
-    .toMany('pets:pets.id')
-    .fromOne('cars', 'id:cars.user', {
-      // query: (q) => {
-      //   q.toOne('brand:brands.id')
-      // },
-    })
-    // .where({ id: 1 })
-    .read('users')
-  xlog(users)
+  // const users = await xsql()
+  //   .toOne('computer:computers.id')
+  //   .toMany('pets:pets.id')
+  //   .fromOne('cars', 'id:cars.user', {
+  //     // query: (q) => {
+  //     //   q.toOne('brand:brands.id')
+  //     // },
+  //   })
+  //   // .where({ id: 1 })
+  //   .read('users')
+  // xlog(users)
 
 
 
