@@ -141,35 +141,39 @@ async function main() {
   for (let i = 1; i <= 100; i++) {
     rows.push({
       index: i,
-      pets: [1, 2],
+      pets: { id: i, foo: [i - 1, i, i + 1] },
     })
   }
   await xsql().delete('test')
   await xsql().batchInsert('test', rows, {
     jsonKeys: 'pets',
   })
-  const tests = await xsql()
-    .pagination({
-      currPage: 6,
-      navStep: 4,
-    })
-    .filter(async (row) => {
-      return (new Promise((res) => {
-        setTimeout(() => {
-          row.pets = [...row.pets, 9]
-          res(row)
-        }, 50)
-      }))
-    })
-    .read('test', {
-      jsonKeys: 'pets',
-    })
-  const { eof, pagination } = tests
-  console.log(util.inspect({
-    tests,
-    eof,
-    pagination,
-  }, false, null, true))
+  // const tests = await xsql()
+  //   // .select('`index`, pets->>\'$[1]\' as pet')
+  //   // .select('`index`')
+  //   // .pagination({
+  //   //   currPage: 1,
+  //   //   navStep: 4,
+  //   // })
+  //   .where('pets->>"$.foo"', 'find_in_set', 40)
+  //   // .where('pets->"$.id"', 'in', [20, 25])
+  //   // .filter(async (row) => {
+  //   //   return (new Promise((res) => {
+  //   //     setTimeout(() => {
+  //   //       row.pets = [...row.pets, 9]
+  //   //       res(row)
+  //   //     }, 50)
+  //   //   }))
+  //   // })
+  //   .read('test', {
+  //     jsonKeys: 'pets',
+  //   })
+  // const { eof, pagination } = tests
+  // console.log(util.inspect({
+  //   tests,
+  //   eof,
+  //   pagination,
+  // }, false, null, true))
 
 
   // Relationship test

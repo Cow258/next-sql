@@ -260,6 +260,45 @@ users = [
 
 ---
 
+### JSON Query
+We also provide JSON query support
+
+
+__Syntax:__
+- `{fieldName}.{jsonKey}.{jsonKey}`\
+  Extract value of JSON object
+- `{fieldName}[]`\
+  Extract JSON array
+> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
+> Not yet support now!\
+> (Will support soon...)
+```js
+// Only return the match records
+const users = await xsql()
+  .where({ 'notificationSetting.enable': true })
+  .and('joinedGroups.id', 'in', [56, 57, 58])
+  .or('joinedChannel[]', 'find_in_set', 101)
+  .read('users')
+
+// Auto parse into javascript object
+const [user] = await xsql()
+  .read('users', {
+    jsonKeys: ['notificationSetting']
+  })
+user.notificationSetting = {
+  enable: true,
+  promotion: true,
+}
+
+// Extract JSON value
+const [user] = await xsql()
+  .select('notificationSetting.enable as notifyEnable')
+  .read('users')
+user.notifyEnable = true
+```
+
+---
+
 ### Row filter
 __Example:__
 ```js
