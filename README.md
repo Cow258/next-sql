@@ -20,6 +20,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
     + [Read all rows from users table](#read-all-rows-from-users-table)
     + [Read single user](#read-single-user)
     + [Advanced query](#advanced-query)
+    + [JSON Support](#json-support)
     + [Row filter](#row-filter)
     + [Group by and Order by](#group-by-and-order-by)
     + [Limit and Offset](#limit-and-offset)
@@ -260,18 +261,15 @@ users = [
 
 ---
 
-### JSON Query
-We also provide JSON query support
-
+### JSON Support
+We also provide JSON support
 
 __Syntax:__
 - `{fieldName}.{jsonKey}.{jsonKey}`\
-  Extract value of JSON object
-- `{fieldName}[]`\
-  Extract JSON array
-> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
-> Not yet support now!\
-> (Will support soon...)
+  Extract value of JSON object that should be `string`, `number`, `boolean`, `null`
+- `{fieldName}[]` || `{fieldName}.{jsonKey}[]`\
+  Extract JSON array that should be `string[]`, `number[]`, `null`
+
 ```js
 // Only return the match records
 const users = await xsql()
@@ -280,21 +278,38 @@ const users = await xsql()
   .or('joinedChannel[]', 'find_in_set', 101)
   .read('users')
 
+
 // Auto parse into javascript object
 const [user] = await xsql()
   .read('users', {
     jsonKeys: ['notificationSetting']
   })
+// Output
 user.notificationSetting = {
   enable: true,
   promotion: true,
 }
 
+
 // Extract JSON value
 const [user] = await xsql()
   .select('notificationSetting.enable as notifyEnable')
   .read('users')
+// Output
 user.notifyEnable = true
+
+
+// Insert or Update or BatchInsert
+// Will auto apply JSON.stringify
+const [user] = await xsql().insert('table', data, {
+  jsonKeys: ['fieldName']
+})
+const [user] = await xsql().update('table', data, {
+  jsonKeys: ['fieldName']
+})
+const [user] = await xsql().batchInsert('table', data, {
+  jsonKeys: ['fieldName']
+})
 ```
 
 ---
@@ -500,17 +515,11 @@ users.pagination = {
 - Construct the data model directly from the query
 - Non-blocking asynchronous table rows mapper
 
-> 🏃🏻‍♂️ Working on progress...
-
-> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
-> Currently, The `options.splitter` of `toMany()` not yet support JSON.\
-> (Will support soon...)
-
 #### Mapper syntax
-`{currentKey}`__:__`{targetTable}`__.__`{targetKey}`
-- `currentKey`: The key of current table you want to map
+`{currentField}`__:__`{targetTable}`__.__`{targetField}`
+- `currentField`: The field name of current table you want to map
 - `targetTable`: Which table do you want to map?
-- `targetKey`: The key of the targer table
+- `targetField`: The field name of the targer table
 
 Example:
 
@@ -551,11 +560,16 @@ Each row linked to many foreign items
 Parameters:
 - `mapper`: The mapper string
 - `options`: The options for this relationship mapping
-  - `splitter`: `','` || `'json[]'` || `'json.key'`\
+  - `splitter`: `','` || `'$[]'` || `'$.key.key[]'`\
     You can customize the separation character,\
     or using `JSON` to provide the mapping data.\
-    `JSON` must eventually return `string[]` or `number[]` or `null`\
-    (⚠️ Will support `JSON` soon...)
+    `JSON` must eventually return `string[]` or `number[]` or `null`
+    - `'$[]'`\
+      The current field is JSON array
+    - `'$.key.key[]'`\
+      The current field is JSON object and find the specify array by provided key\
+      e.g. `$.too[]` the `too` is JSON array\
+      e.g. `$.foo.bar[]` the `bar` is JSON array
   - `filter`: `(row) => (row)`\
     Each incoming row will be replaced by this function,\
     async function is not allowed.
@@ -581,7 +595,7 @@ Parameters:
 
 #### fromMany() <a name="frommany"></a>
 > __🔄 Coming Soon...__\
-> Not supported at this moment.\
+> Based on performance considerations temporarily not supported.\
 > Maybe it will be supported in some days of the future.
 
 #### Example <a name="relationship-example"></a>

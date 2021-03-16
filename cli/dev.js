@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable vars-on-top */
 /* eslint-disable no-redeclare */
@@ -32,14 +33,14 @@ xsql.init({
       password: 'testpassword',
       database: 'xsql_test',
     },
-    test2: {
-      client: 'mysql',
-      host: '127.0.0.1',
-      port: 23306,
-      user: 'testuser',
-      password: 'testpassword',
-      database: 'xsql_test2',
-    },
+    // test2: {
+    //   client: 'mysql',
+    //   host: '127.0.0.1',
+    //   port: 23306,
+    //   user: 'testuser',
+    //   password: 'testpassword',
+    //   database: 'xsql_test2',
+    // },
   },
 })
 // console.log(util.inspect(xsql, false, null, true))
@@ -137,17 +138,18 @@ async function main() {
 
 
   // Pagination Test
-  const rows = []
-  for (let i = 1; i <= 100; i++) {
-    rows.push({
-      index: i,
-      pets: { id: i, foo: [i - 1, i, i + 1] },
-    })
-  }
-  await xsql().delete('test')
-  await xsql().batchInsert('test', rows, {
-    jsonKeys: 'pets',
-  })
+  // const rows = []
+  // for (let i = 1; i <= 100; i++) {
+  //   rows.push({
+  //     index: i,
+  //     pets: { id: i, foo: [i - 1, i, i + 1] },
+  //     bar: `${i - 1}|${i}|${i + 1}`,
+  //   })
+  // }
+  // await xsql().delete('test')
+  // await xsql().batchInsert('test', rows, {
+  //   jsonKeys: 'pets',
+  // })
   // const tests = await xsql()
   //   // .select('`index`, pets->>\'$[1]\' as pet')
   //   // .select('`index`')
@@ -218,6 +220,15 @@ async function main() {
   // }, {
   //   jsonKeys: 'pets',
   // })
+
+  // const result = await xsql()
+  //   // .select("`index`, REPLACE(pets, ',', '|') as pets")
+  //   // .where('pets.foo[]', 'find_in_set', 42)
+  //   .where('pets.foo[1]', 'between', [36, 50])
+  //   // .where("REPLACE(pets, ',', '|')", 'like', '%36%')
+  //   // .where('pets.id', 'between', [40, 50])
+  //   .read('test')
+  // xlog(result)
 
   process.exit()
 }
