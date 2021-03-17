@@ -33,6 +33,14 @@ xsql.init({
       password: 'testpassword',
       database: 'xsql_test',
     },
+    pg: {
+      client: 'pg',
+      host: '127.0.0.1',
+      user: 'testuser',
+      password: 'xsqltest',
+      database: 'xsql_test',
+      port: 25432,
+    },
     // test2: {
     //   client: 'mysql',
     //   host: '127.0.0.1',

@@ -31,7 +31,7 @@
     "lint:js": "eslint --ext .js .",
     "lint:fix": "eslint --ext .js --fix .",
     "test": "jest --runInBand ./test/**.test.js",
-    "db:start": "docker-compose -f cli/docker-compose.yml up --build -d mysql && docker-compose -f cli/docker-compose.yml up waitmysql",
+    "db:start": "docker-compose -f cli/docker-compose.yml up --build -d mysql postgres && docker-compose -f cli/docker-compose.yml up waitmysql waitpostgres",
     "db:stop": "docker-compose -f cli/docker-compose.yml down"
   },
   "dependencies": {
@@ -55,10 +55,14 @@
     "prettier": "^2.2.1"
   },
   "peerDependencies": {
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "pg": "^8.5.1"
   },
   "peerDependenciesMeta": {
     "mysql": {
+      "optional": true
+    },
+    "pg": {
       "optional": true
     }
   },

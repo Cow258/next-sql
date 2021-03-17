@@ -39,6 +39,27 @@ services:
       - -c
       - 'until /usr/bin/mysql -hmysql -utestuser -ptestpassword -e "SELECT 1"; do sleep 5; done'
 
+  postgres:
+    image: postgres:alpine
+    # see https://www.postgresql.org/docs/current/non-durability.html
+    command: "-c full_page_writes=off -c fsync=off -c synchronous_commit=off"
+    ports:
+      - "25432:5432"
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=xsqltest
+      - POSTGRES_DB=xsql_test
+  waitpostgres:
+    image: postgres:alpine
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/local/bin/psql postgres://testuser:xsqltest@postgres/xsql_test -c "SELECT 1"; do sleep 5; done'
+
 volumes:
   mysql_data:
     driver_opts:
