@@ -230,6 +230,32 @@ async function main() {
   //   .read('test')
   // xlog(result)
 
+
+  // Product Test
+  const [d] = await xsql()
+    .where('price', '>', 0)
+    .where({ id: 14, status: 1, hide: 0 })
+    .toMany('imgs:attinfo.num', {
+      omitMapperKey: true,
+      query: (q) => (q.select('num,w,h')),
+    })
+    .fromOne('others', 'shop:shopProduct.shop', {
+      omitMapperKey: true,
+      query: (q) => (q
+        .where('price', '>', 0)
+        .where({ status: 1, hide: 0 })
+        .orderBy('`sort`')
+        .select('id,shop,imgs,title,`desc`,outsider,price,tag,enable')),
+    })
+    .toOne('shop:shopInfo.id', {
+      omitMapperKey: true,
+      query: (q) => {
+        q.select('id,name')
+      },
+    })
+    .read('shopProduct')
+  xlog(d)
+
   process.exit()
 }
 main()

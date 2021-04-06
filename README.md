@@ -553,6 +553,10 @@ Parameters:
     The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
+  - `addonKey`\
+    You can provide the key for store all incoming data, this key will add to the end of current row object
+  - `omitMapperKey`: `[default=false]`\
+    Auto remove the mapping key from fetched rows.
 
 #### toMany(mapper, options) <a name="tomany"></a>
 Each row linked to many foreign items
@@ -577,6 +581,10 @@ Parameters:
     The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
+  - `addonKey`\
+    You can provide the key for store all incoming data, this key will add to the end of current row object
+  - `omitMapperKey`: `[default=false]`\
+    Auto remove the mapping key from fetched rows.
 
 #### fromOne(addonKey, mapper, options) <a name="fromone"></a>
 Each foreign items linked to one current row
@@ -592,6 +600,8 @@ Parameters:
     The `q` of the callback is a new instance of `xsql()`,\
     you can do any addition query you want,\
     also you can do unlimited layer relationship.
+  - `omitMapperKey`: `[default=false]`\
+    Auto remove the mapping key from fetched rows.
 
 #### fromMany() <a name="frommany"></a>
 > __🔄 Coming Soon...__\
