@@ -682,6 +682,8 @@ Parameters:
 
 - `mapper`: The mapper string
 - `options`: The options for this relationship mapping
+  - `arrayMapper`: `(array) => string[]`
+    When using JSON array, you can use this method to map the array value to string array
   - `splitter`: `','` || `'$[]'` || `'$.key.key[]'`\
     You can customize the separation character,\
     or using `JSON` to provide the mapping data.\
