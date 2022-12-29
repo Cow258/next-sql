@@ -1,13 +1,16 @@
-export = transaction;
-/** @typedef {import('./')} xSQL */
+export = transaction
+/** @typedef {import('./')} xsql */
 /** @typedef {import('mysql').MysqlError} MysqlError */
 /**
- * @param {xSQL} xSQL
+ * @param {xsql} xsql
  * @param {hostId} hostId
  */
-declare function transaction(xSQL: xSQL, hostId: any): (callback: (t: () => import("./")) => Promise<any>) => Promise<void>;
+declare function transaction(
+  xsql: xsql,
+  hostId: any
+): (callback: (t: () => import('./')) => Promise<any>) => Promise<void>
 declare namespace transaction {
-    export { xSQL, MysqlError };
+  export { xsql, MysqlError }
 }
-type xSQL = import('./');
-type MysqlError = any;
+type xsql = import('./')
+type MysqlError = any
