@@ -16,12 +16,12 @@
   ],
   "author": "Cowboy Ho <info@cow-boy.net>",
   "license": "Apache-2.0",
-  "types": "index.d.js",
+  "types": "index.d.ts",
   "main": "index.js",
   "files": [
     "lib/**",
     "index.js",
-    "index.d.js"
+    "index.d.ts"
   ],
   "repository": {
     "type": "git",
