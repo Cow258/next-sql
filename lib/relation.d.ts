@@ -1,26 +1,23 @@
 export type RelationOptions = {
-  type: 'toOne' | 'toMany' | 'fromOne'
-  currentKey: string
-  targetTable: string
-  targetKey: string
-  addonKey: string
-  splitter: string
-  omitMapperKey: boolean
-  filter: (row: ReadResult) => (row: ReadResult) => any
-  query: (q: xsql) => {}
-}
-export type xsql = import('./')
-export type ReadResult = import('./array').ReadResult
+    type: ('toOne' | 'toMany' | 'fromOne');
+    currentKey: string;
+    targetTable: string;
+    targetKey: string;
+    addonKey: string;
+    splitter: string;
+    omitMapperKey: boolean;
+    filter: (row: ReadResult) => (row: ReadResult) => any;
+    map: (row: ReadResult) => (row: ReadResult) => any;
+    query: (q: xsql) => {};
+};
+export type xsql = import('./');
+export type ReadResult = import('./array').ReadResult;
 /**
  * @this xsql
  * @param {ReadResult} currentRows
  * @param {xsql} xsql
  */
-export function _relationFetch(
-  this: import('./'),
-  currentRows: ReadResult,
-  xsql: xsql
-): Promise<any[] | undefined>
+export function _relationFetch(this: import("./"), currentRows: ReadResult, xsql: xsql): Promise<any[] | undefined>;
 /**
  * @this xsql
  * @param {'currentKey:targetTable.targetKey'} mapper
@@ -28,18 +25,16 @@ export function _relationFetch(
  * @param {string} options.addonKey
  * @param {boolean} options.omitMapperKey
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
+ * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
  */
-export function toOne(
-  this: import('./'),
-  mapper: 'currentKey:targetTable.targetKey',
-  options?: {
-    addonKey: string
-    omitMapperKey: boolean
-    filter: (row: ReadResult) => (row: ReadResult) => any
-    query: (q: xsql) => {}
-  }
-): import('./')
+export function toOne(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
+    addonKey: string;
+    omitMapperKey: boolean;
+    filter: (row: ReadResult) => (row: ReadResult) => any;
+    map: (row: ReadResult) => (row: ReadResult) => any;
+    query: (q: xsql) => {};
+}): import("./");
 /**
  * @this xsql
  * @param {'currentKey:targetTable.targetKey'} mapper
@@ -49,20 +44,18 @@ export function toOne(
  * @param {string} options.splitter
  * @param {(jsonArray: []) => string[]} options.arrayMapper
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
+ * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
  */
-export function toMany(
-  this: import('./'),
-  mapper: 'currentKey:targetTable.targetKey',
-  options?: {
-    addonKey: string
-    omitMapperKey: boolean
-    splitter: string
-    arrayMapper: (jsonArray: []) => string[]
-    filter: (row: ReadResult) => (row: ReadResult) => any
-    query: (q: xsql) => {}
-  }
-): import('./')
+export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
+    addonKey: string;
+    omitMapperKey: boolean;
+    splitter: string;
+    arrayMapper: (jsonArray: []) => string[];
+    filter: (row: ReadResult) => (row: ReadResult) => any;
+    map: (row: ReadResult) => (row: ReadResult) => any;
+    query: (q: xsql) => {};
+}): import("./");
 /**
  * @this xsql
  * @param {string} addonKey
@@ -70,15 +63,12 @@ export function toMany(
  * @param {Object} options
  * @param {boolean} options.omitMapperKey
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
+ * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
  */
-export function fromOne(
-  this: import('./'),
-  addonKey: string,
-  mapper: 'currentKey:targetTable.targetKey',
-  options?: {
-    omitMapperKey: boolean
-    filter: (row: ReadResult) => (row: ReadResult) => any
-    query: (q: xsql) => {}
-  }
-): import('./')
+export function fromOne(this: import("./"), addonKey: string, mapper: 'currentKey:targetTable.targetKey', options?: {
+    omitMapperKey: boolean;
+    filter: (row: ReadResult) => (row: ReadResult) => any;
+    map: (row: ReadResult) => (row: ReadResult) => any;
+    query: (q: xsql) => {};
+}): import("./");

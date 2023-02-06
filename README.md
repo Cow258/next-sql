@@ -24,6 +24,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
   - [Advanced query](#advanced-query)
   - [JSON Support](#json-support)
   - [Row filter](#row-filter)
+  - [Row map](#row-map)
   - [Group by and Order by](#group-by-and-order-by)
   - [Limit and Offset](#limit-and-offset)
   - [Disable Log](#disable-log)
@@ -394,6 +395,10 @@ const [user] = await xsql().batchInsert('table', data, {
 
 ### Row filter
 
+Before fetch relationship,\
+mean you CAN NOT get the data from relationship field,\
+your only get the original row data
+
 **Example:**
 
 ```js
@@ -425,6 +430,57 @@ users = [
   {
     id: 1,
     age: 20,
+    birth: {
+      year: 2001,
+      month: 1,
+      day: 1,
+      timestamp: 978307200000,
+    },
+  },
+]
+```
+
+---
+
+### Row map
+
+After fetch relationship,\
+mean you can get the data from relationship field.
+
+**Example:**
+
+```js
+const users = await xsql()
+  .toOne('car:cars.id') // <- relationship field
+  .map((row) => ({
+    id: row.id,
+    age: row.age,
+    carColor: row.car.color, // <- relationship field
+    birth: {
+      year: row.birthAt.getFullYear(),
+      month: row.birthAt.getMonth() + 1,
+      day: row.birthAt.getDate(),
+      timestamp: row.birthAt.getTime(),
+    },
+  }))
+  .where({ id: 1 })
+  .read('users')
+```
+
+Equivalent to the following SQL statement
+
+```sql
+SELECT * FROM `users` WHERE `id` = 1
+```
+
+Result
+
+```js
+users = [
+  {
+    id: 1,
+    age: 20,
+    carColor: 'red',
     birth: {
       year: 2001,
       month: 1,
