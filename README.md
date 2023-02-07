@@ -565,6 +565,52 @@ It will diable the log.
 
 ---
 
+### Extends Query
+
+**Example:**
+
+```js
+// Frequently used queries
+const linkImg = (query) => {
+  query
+    .select('userId,userName,userAvatar,userAlbum')
+    .toOne('userAvatar:imgTable.imgId', {
+      query: q => q
+        .select('imgId,imgUrl'),
+    })
+    .toMany('userAlbum:imgTable.imgId', {
+      query: q => q
+        .select('imgId,imgUrl'),
+    })
+}
+// Apply on query
+const users = await xsql()
+  .where({ userId: 1 })
+  .extend(linkImg)
+  .read('users')
+```
+
+You can import frequently used queries and apply them via `extend`
+
+Result
+
+```js
+users = [
+  {
+    userId: 1,
+    userName: 'Foo Bar',
+    userAvatar: { imgId: 1, imgUrl: 'img.png' },
+    userAlbum: [
+      { imgId: 2, imgUrl: 'img.png' },
+      { imgId: 3, imgUrl: 'img.png' },
+      { imgId: 4, imgUrl: 'img.png' },
+    ],
+  },
+]
+```
+
+---
+
 ### Pagination
 
 Automatically manage pagination.

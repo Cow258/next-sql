@@ -106,3 +106,8 @@ export function offset(this: import("./"), input: number): import("./");
  * @param {boolean} input
  */
 export function log(this: import("./"), input: boolean): import("./");
+/**
+ * @this xsql
+ * @param {(q:xsql)=>void} extendsFn
+ */
+export function extend(this: import("./"), extendsFn: (q: xsql) => void): import("./");

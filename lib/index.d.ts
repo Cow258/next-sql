@@ -70,6 +70,7 @@ declare class xsql {
     limit: typeof builder.limit | undefined;
     offset: typeof builder.offset | undefined;
     log: typeof builder.log | undefined;
+    extend: typeof builder.extend | undefined;
     /** @private */
     private _runCommand;
     /** Read table from database */
