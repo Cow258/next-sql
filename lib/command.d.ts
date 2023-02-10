@@ -1,6 +1,6 @@
 export type xsql = import('./');
 export type Command = ("read" | "update" | "insert" | "delete" | "batchInsert");
-export type OkPacket = any;
+export type OkPacket = import('mysql').OkPacket;
 /**
    * @private
    * @this xsql

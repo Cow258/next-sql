@@ -1,15 +1,16 @@
 declare const _exports: {
     [x: string]: {
-        client: any;
-        pool: any;
+        client: typeof import("mysql");
+        pool: import("mysql").PoolCluster;
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        init(config: any): void;
+        escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+        init(config: import("mysql").PoolClusterConfig): void;
         _checkInit(): void;
-        getConnection(hostId: string): Promise<any>;
-        query(conn: any, sql: string, params: any[], log: boolean): any[];
-        getTransaction(conn: any): {
+        getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
+        query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("mysql").PoolConnection): {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;

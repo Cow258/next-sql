@@ -20,16 +20,17 @@ declare class xsql {
     conn: any;
     isTransaction: boolean | undefined;
     client: {
-        client: any;
-        pool: any;
+        client: typeof import("mysql");
+        pool: import("mysql").PoolCluster;
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        init(config: any): void;
+        escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+        init(config: import("mysql").PoolClusterConfig): void;
         _checkInit(): void;
-        getConnection(hostId: string): Promise<any>;
-        query(conn: any, sql: string, params: any[], log: boolean): any[];
-        getTransaction(conn: any): {
+        getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
+        query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("mysql").PoolConnection): {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;
@@ -90,9 +91,9 @@ declare class xsql {
     toOne: typeof toOne | undefined;
     toMany: typeof toMany | undefined;
     fromOne: typeof fromOne | undefined;
-    escape: any;
+    escape: typeof import("mysql").escape | undefined;
     /** Get connection of this instance */
-    getConnection: (() => Promise<any>) | undefined;
+    getConnection: (() => Promise<import("mysql").PoolConnection>) | undefined;
     /** Use client native query for fallback */
     query: ((sql: any, params: any) => Promise<any[]>) | undefined;
     /**
@@ -203,16 +204,17 @@ declare function init(options: {
 }): void;
 /** @param {CLIENTS} client */
 declare function getClient(client: CLIENTS): {
-    client: any;
-    pool: any;
+    client: typeof import("mysql");
+    pool: import("mysql").PoolCluster;
     isLog: boolean;
     isInit: boolean;
     logger: (msg: string) => void;
-    init(config: any): void;
+    escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+    init(config: import("mysql").PoolClusterConfig): void;
     _checkInit(): void;
-    getConnection(hostId: string): Promise<any>;
-    query(conn: any, sql: string, params: any[], log: boolean): any[];
-    getTransaction(conn: any): {
+    getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
+    query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
+    getTransaction(conn: import("mysql").PoolConnection): {
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
         rollback(): Promise<any>;

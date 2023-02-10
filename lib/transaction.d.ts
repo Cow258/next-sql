@@ -10,4 +10,4 @@ declare namespace transaction {
     export { xsql, MysqlError };
 }
 type xsql = import('./');
-type MysqlError = any;
+type MysqlError = import('mysql').MysqlError;

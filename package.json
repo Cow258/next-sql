@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@types/mysql": "^2.15.21",
     "babel-eslint": "^10.1.0",
     "console.table": "^0.10.0",
     "eslint": "^7.19.0",

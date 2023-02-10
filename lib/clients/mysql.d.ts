@@ -2,31 +2,32 @@ export type xsql = import('../index');
 export type Conditions = import('../index').Conditions;
 export type State = import('../index').State;
 export type Command = import('../index').Command;
-export type mysql = any;
-export type PoolCluster = any;
-export type PoolClusterConfig = any;
-export type PoolConnection = any;
-export type OkPacket = any;
+export type mysql = typeof import("mysql");
+export type PoolCluster = import('mysql').PoolCluster;
+export type PoolClusterConfig = import('mysql').PoolClusterConfig;
+export type PoolConnection = import('mysql').PoolConnection;
+export type OkPacket = import('mysql').OkPacket;
 export type Row = {
     [field: string]: string | number | boolean | Buffer | Date;
 };
 export type Filter = (row: Row) => Row[];
 export type QueryReturn = Promise<Row[] | OkPacket>;
-declare const client: any;
-declare const pool: any;
+declare const client: mysql;
+declare const pool: PoolCluster;
 declare const isLog: boolean;
 declare const isInit: boolean;
 declare const logger: (msg: string) => void;
-type escape = any;
+declare function escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+type escape = typeof import("mysql").escape;
 /** @param {PoolClusterConfig} config */
-declare function init(config: any): void;
+declare function init(config: import("mysql").PoolClusterConfig): void;
 /** @private */
 declare function _checkInit(): void;
 /**
  * @param {string} hostId
  * @returns {Promise<PoolConnection>}
  */
-declare function getConnection(hostId: string): Promise<any>;
+declare function getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
 /**
  * @param {PoolConnection} conn
  * @param {string} sql
@@ -34,11 +35,11 @@ declare function getConnection(hostId: string): Promise<any>;
  * @param {boolean} log
  * @returns {any[]}
  */
-declare function query(conn: any, sql: string, params: any[], log: boolean): any[];
+declare function query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
 /**
  * @param {PoolConnection} conn
  */
-declare function getTransaction(conn: any): {
+declare function getTransaction(conn: import("mysql").PoolConnection): {
     beginTransaction(): Promise<any>;
     commit(): Promise<any>;
     rollback(): Promise<any>;
