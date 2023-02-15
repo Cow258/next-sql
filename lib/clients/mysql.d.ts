@@ -21,6 +21,7 @@ declare function escape(value: any, stringifyObjects?: boolean | undefined, time
 type escape = typeof import("mysql").escape;
 /** @param {PoolClusterConfig} config */
 declare function init(config: import("mysql").PoolClusterConfig): void;
+declare function close(): Promise<any>;
 /** @private */
 declare function _checkInit(): void;
 /**

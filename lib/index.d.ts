@@ -27,6 +27,7 @@ declare class xsql {
         logger: (msg: string) => void;
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
+        close(): Promise<any>;
         _checkInit(): void;
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -34,7 +35,7 @@ declare class xsql {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;
-            release(): void;
+            release(): void; /** @private */
         };
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
             primaryKeys: Set<any>;
@@ -153,7 +154,7 @@ declare class xsql {
     toRaw: ((sql: string, params: any[]) => string) | undefined;
 }
 declare namespace xsql {
-    export { defaultHost, options, hosts, pools, clients, init, getClient, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, Condition, Conditions, State, OkPacket, HostOptions };
+    export { defaultHost, options, hosts, pools, clients, init, getClient, close, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, Condition, Conditions, State, OkPacket, HostOptions };
 }
 type HostOptions = {
     client: "mysql";
@@ -211,6 +212,7 @@ declare function getClient(client: CLIENTS): {
     logger: (msg: string) => void;
     escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
     init(config: import("mysql").PoolClusterConfig): void;
+    close(): Promise<any>;
     _checkInit(): void;
     getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
     query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -218,7 +220,7 @@ declare function getClient(client: CLIENTS): {
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
         rollback(): Promise<any>;
-        release(): void;
+        release(): void; /** @private */
     };
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
         primaryKeys: Set<any>;
@@ -227,6 +229,7 @@ declare function getClient(client: CLIENTS): {
     }): [sql: string, params: any[]];
     toRaw(sql: string, params: any[]): string;
 };
+declare function close(): Promise<any[]>;
 type CLIENTS = import('./clients/constance').CLIENTS;
 type PaginationOptions = import('./pagination').PaginationOptions;
 type PaginationResult = import('./pagination').PaginationResult;
