@@ -38,7 +38,8 @@
     "db:stop": "docker-compose -f cli/docker-compose.yml down",
     "cli": "node ./cli",
     "format": "prettier --write \"**/*.d.ts\" --loglevel silent",
-    "types": "yarn cli types clean && tsc --declaration --emitDeclarationOnly"
+    "types": "yarn cli types clean && tsc --declaration --emitDeclarationOnly",
+    "types:clean": "yarn cli types clean"
   },
   "dependencies": {
     "chalk": "^4.1.0",
