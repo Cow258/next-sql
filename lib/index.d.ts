@@ -28,6 +28,7 @@ declare class xsql {
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
         close(): Promise<any>;
+        /** @type {{[hostId: string]: HostOptions}} */
         _checkInit(): void;
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -35,7 +36,31 @@ declare class xsql {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;
-            release(): void; /** @private */
+            release(): void;
+        };
+        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
+    } | {
+        client: typeof import("mysql2");
+        pool: import("mysql2").PoolCluster;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(value: any): string;
+        init(config: any): void;
+        close(): Promise<any>;
+        _checkInit(): void;
+        getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("mysql2").PoolConnection): {
+            beginTransaction(): Promise<any>;
+            commit(): Promise<any>;
+            rollback(): Promise<any>;
+            release(): void;
         };
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
             primaryKeys: Set<any>;
@@ -94,7 +119,7 @@ declare class xsql {
     fromOne: typeof fromOne | undefined;
     escape: typeof import("mysql").escape | undefined;
     /** Get connection of this instance */
-    getConnection: (() => Promise<import("mysql").PoolConnection>) | undefined;
+    getConnection: (() => Promise<import("mysql").PoolConnection | import("mysql2").PoolConnection>) | undefined;
     /** Use client native query for fallback */
     query: ((sql: any, params: any) => Promise<any[]>) | undefined;
     /**
@@ -157,7 +182,7 @@ declare namespace xsql {
     export { defaultHost, options, hosts, pools, clients, init, getClient, close, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, Condition, Conditions, State, OkPacket, HostOptions };
 }
 type HostOptions = {
-    client: "mysql";
+    client: "mysql" | "mysql2";
     host: string;
     user: string;
     password: string;
@@ -213,6 +238,7 @@ declare function getClient(client: CLIENTS): {
     escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
     init(config: import("mysql").PoolClusterConfig): void;
     close(): Promise<any>;
+    /** @type {{[hostId: string]: HostOptions}} */
     _checkInit(): void;
     getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
     query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -220,7 +246,31 @@ declare function getClient(client: CLIENTS): {
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
         rollback(): Promise<any>;
-        release(): void; /** @private */
+        release(): void;
+    };
+    toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+        primaryKeys: Set<any>;
+        sumKeys: Set<any>;
+        jsonKeys: string[];
+    }): [sql: string, params: any[]];
+    toRaw(sql: string, params: any[]): string;
+} | {
+    client: typeof import("mysql2");
+    pool: import("mysql2").PoolCluster;
+    isLog: boolean;
+    isInit: boolean;
+    logger: (msg: string) => void;
+    escape(value: any): string;
+    init(config: any): void;
+    close(): Promise<any>;
+    _checkInit(): void;
+    getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
+    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
+    getTransaction(conn: import("mysql2").PoolConnection): {
+        beginTransaction(): Promise<any>;
+        commit(): Promise<any>;
+        rollback(): Promise<any>;
+        release(): void;
     };
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
         primaryKeys: Set<any>;

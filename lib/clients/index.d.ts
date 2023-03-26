@@ -23,6 +23,30 @@ declare const _exports: {
             jsonKeys: string[];
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
+    } | {
+        client: typeof import("mysql2");
+        pool: import("mysql2").PoolCluster;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(value: any): string;
+        init(config: any): void;
+        close(): Promise<any>;
+        _checkInit(): void;
+        getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("mysql2").PoolConnection): {
+            beginTransaction(): Promise<any>;
+            commit(): Promise<any>;
+            rollback(): Promise<any>;
+            release(): void;
+        };
+        toStatement(cmd: import("../command").Command, table: string, state: import("..").State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
     };
 };
 export = _exports;
