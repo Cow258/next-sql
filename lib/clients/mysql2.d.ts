@@ -23,7 +23,7 @@ type escape = typeof import("mysql2").escape;
 declare function init(config: any): void;
 declare function close(): Promise<any>;
 /** @private */
-declare function _checkInit(): void;
+declare function _checkInit(): Promise<void>;
 /**
  * @param {string} hostId
  * @returns {Promise<PoolConnection>}

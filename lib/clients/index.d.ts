@@ -8,7 +8,7 @@ declare const _exports: {
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
         close(): Promise<any>;
-        _checkInit(): void;
+        _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql").PoolConnection): {
@@ -32,7 +32,7 @@ declare const _exports: {
         escape(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
-        _checkInit(): void;
+        _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
         query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql2").PoolConnection): {

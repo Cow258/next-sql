@@ -28,8 +28,7 @@ declare class xsql {
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
         close(): Promise<any>;
-        /** @type {{[hostId: string]: HostOptions}} */
-        _checkInit(): void;
+        _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql").PoolConnection): {
@@ -53,9 +52,9 @@ declare class xsql {
         escape(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
-        _checkInit(): void;
+        _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
         getTransaction(conn: import("mysql2").PoolConnection): {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
@@ -238,8 +237,7 @@ declare function getClient(client: CLIENTS): {
     escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
     init(config: import("mysql").PoolClusterConfig): void;
     close(): Promise<any>;
-    /** @type {{[hostId: string]: HostOptions}} */
-    _checkInit(): void;
+    _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
     query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("mysql").PoolConnection): {
@@ -263,9 +261,9 @@ declare function getClient(client: CLIENTS): {
     escape(value: any): string;
     init(config: any): void;
     close(): Promise<any>;
-    _checkInit(): void;
+    _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
+    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
     getTransaction(conn: import("mysql2").PoolConnection): {
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;

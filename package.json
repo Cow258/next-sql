@@ -43,8 +43,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "classnames": "^2.2.6",
-    "lodash.get": "^4.4.2"
+    "classnames": "^2.2.6"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

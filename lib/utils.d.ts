@@ -10,3 +10,4 @@ export function objectToJson(data: any, jsonKeys: string[]): any;
  * @param {string[]} [jsonKeys]
  */
 export function parseJson(data: any, jsonKeys?: string[] | undefined): any;
+export function getByString(obj: any, path?: string): any;
