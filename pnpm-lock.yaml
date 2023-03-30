@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@planetscale/database': ^1.6.0
   '@types/jest': ^26.0.20
   '@types/mysql': ^2.15.21
   babel-eslint: ^10.1.0
@@ -19,13 +20,16 @@ specifiers:
   mysql: ^2.18.1
   mysql2: ^3.2.0
   prettier: ^2.2.1
+  sqlstring: ^2.3.3
   typescript: ^4.9.4
 
 dependencies:
   chalk: 4.1.2
   classnames: 2.3.2
+  sqlstring: 2.3.3
 
 devDependencies:
+  '@planetscale/database': 1.6.0
   '@types/jest': 26.0.24
   '@types/mysql': 2.15.21
   babel-eslint: 10.1.0_eslint@7.32.0
@@ -673,6 +677,11 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.14.0
+    dev: true
+
+  /@planetscale/database/1.6.0:
+    resolution: {integrity: sha512-eb02567S706Xme/nVwx+EN/wyoHhHBXl1a7+67R/Xm91myEpLn0vZNl58TvLZztBxje4gga16lc8dLt0elNrJA==}
+    engines: {node: '>=16'}
     dev: true
 
   /@sinonjs/commons/1.8.6:
@@ -4492,7 +4501,6 @@ packages:
   /sqlstring/2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
-    dev: true
 
   /stack-utils/2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}

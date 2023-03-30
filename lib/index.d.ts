@@ -54,13 +54,80 @@ declare class xsql {
         close(): Promise<any>;
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql2").PoolConnection): {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;
             release(): void;
         };
+        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
+    } | {
+        client: typeof import("@planetscale/database");
+        pool: Map<string, import("@planetscale/database").Connection>;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined>): string;
+        init(config: import("./clients/database-js").ConfigOptions): void;
+        close(): null;
+        _checkInit(): Promise<void>;
+        getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
+        query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
@@ -116,9 +183,9 @@ declare class xsql {
     toOne: typeof toOne | undefined;
     toMany: typeof toMany | undefined;
     fromOne: typeof fromOne | undefined;
-    escape: typeof import("mysql").escape | undefined;
+    escape: typeof import("mysql").escape | typeof import("@planetscale/database").format | undefined;
     /** Get connection of this instance */
-    getConnection: (() => Promise<import("mysql").PoolConnection | import("mysql2").PoolConnection>) | undefined;
+    getConnection: (() => Promise<import("mysql").PoolConnection | import("@planetscale/database").Connection | import("mysql2").PoolConnection>) | undefined;
     /** Use client native query for fallback */
     query: ((sql: any, params: any) => Promise<any[]>) | undefined;
     /**
@@ -145,7 +212,7 @@ declare class xsql {
      * @param {Command} cmd
      * @param {string} table
      */
-    toStatement: ((cmd: Command, table: string, data: any) => Statement) | undefined;
+    toStatement: ((cmd: Command, table: string, data: any, options: any) => Statement) | undefined;
     /**
      * Render raw SQL statement string
      *
@@ -181,7 +248,7 @@ declare namespace xsql {
     export { defaultHost, options, hosts, pools, clients, init, getClient, close, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, Condition, Conditions, State, OkPacket, HostOptions };
 }
 type HostOptions = {
-    client: "mysql" | "mysql2";
+    client: "mysql" | "mysql2" | "database-js";
     host: string;
     user: string;
     password: string;
@@ -263,13 +330,80 @@ declare function getClient(client: CLIENTS): {
     close(): Promise<any>;
     _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
+    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("mysql2").PoolConnection): {
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
         rollback(): Promise<any>;
         release(): void;
     };
+    toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+        primaryKeys: Set<any>;
+        sumKeys: Set<any>;
+        jsonKeys: string[];
+    }): [sql: string, params: any[]];
+    toRaw(sql: string, params: any[]): string;
+} | {
+    client: typeof import("@planetscale/database");
+    pool: Map<string, import("@planetscale/database").Connection>;
+    isLog: boolean;
+    isInit: boolean;
+    logger: (msg: string) => void;
+    escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined)[] | {
+        toString: () => string;
+    } | null | undefined>): string;
+    init(config: import("./clients/database-js").ConfigOptions): void;
+    close(): null;
+    _checkInit(): Promise<void>;
+    getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
+    query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
+    getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
         primaryKeys: Set<any>;
         sumKeys: Set<any>;

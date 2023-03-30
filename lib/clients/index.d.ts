@@ -47,6 +47,74 @@ declare const _exports: {
             jsonKeys: string[];
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
+    } | {
+        client: typeof import("@planetscale/database");
+        pool: Map<string, import("@planetscale/database").Connection>;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined)[] | {
+            toString: () => string;
+        } | null | undefined>): string;
+        init(config: databaseJs.ConfigOptions): void;
+        close(): null;
+        _checkInit(): Promise<void>;
+        getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
+        query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
+        toStatement(cmd: import("../command").Command, table: string, state: import("..").State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
     };
 };
 export = _exports;
+import databaseJs = require("./database-js");
