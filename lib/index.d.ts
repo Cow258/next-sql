@@ -129,6 +129,7 @@ declare class xsql {
         query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            /** Delete rows from table */
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
             jsonKeys: string[];
@@ -405,6 +406,7 @@ declare function getClient(client: CLIENTS): {
     query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+        /** Delete rows from table */
         primaryKeys: Set<any>;
         sumKeys: Set<any>;
         jsonKeys: string[];
