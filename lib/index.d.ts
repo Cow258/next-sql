@@ -52,6 +52,12 @@ declare class xsql {
         escape(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
+        /**
+         * @namespace xsql
+         * @constructs xsql
+         * @param {string} hostId
+         * @returns {xsql}
+         */
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
         query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -129,7 +135,6 @@ declare class xsql {
         query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-            /** Delete rows from table */
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
             jsonKeys: string[];
@@ -138,10 +143,9 @@ declare class xsql {
     } | undefined;
     isLog: boolean | undefined;
     /**
-     * @private
      * @type {State}
      */
-    private _state;
+    _state: State;
     clean: (() => xsql) | undefined;
     /**
      * Take a "snapshot" of the xsql instance, returning a new instance.
@@ -258,7 +262,7 @@ type HostOptions = {
 import command = require("./command");
 type State = {
     conditions: Conditions;
-    select: any;
+    select: string;
     filter: Function;
     groupBy: string;
     having: string;
@@ -329,6 +333,12 @@ declare function getClient(client: CLIENTS): {
     escape(value: any): string;
     init(config: any): void;
     close(): Promise<any>;
+    /**
+     * @namespace xsql
+     * @constructs xsql
+     * @param {string} hostId
+     * @returns {xsql}
+     */
     _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
     query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -406,7 +416,6 @@ declare function getClient(client: CLIENTS): {
     query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-        /** Delete rows from table */
         primaryKeys: Set<any>;
         sumKeys: Set<any>;
         jsonKeys: string[];

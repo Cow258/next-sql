@@ -16,6 +16,7 @@ export namespace TYPE {
     const BRACKET_START: string;
     const BRACKET_END: string;
     const NORMAL: string;
+    const RAW: string;
 }
 /**
  * @typedef {Object} Condition
@@ -36,29 +37,68 @@ export function _addCondition(this: import("./"), condition: Condition): void;
  */
 export function _addWhereClause(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator, value: any, connector?: string): import("./");
 /**
+ * ```js
+ * xsql()
+ *   .where({ id: 1 })
+ *   .where('id', '=', 1)
+ *   .where('id', '>', 1)
+ *   .where('id', 'find_in_set', 1)
+ *   .where('id', 'between', [1,2])
+ *   .where('id', 'in', [1,2])
+ *   .where('name', 'like', '%john%')
+ *   .where('id = ? AND age > ?', [1, 18])
+ *   .where('money > 0', [])
+ *   .where('MATCH(title, content) AGAINST(? IN NATURAL LANGUAGE MODE)', [keyword])
+ * ```
  * @this xsql
  * @param {(string|KeyValuePair|(q: xsql) => {})} input
- * @param {Operator} operator
+ * @param {Operator|Array} operator
  * @param {*} value
  * @returns {xsql}
  */
-export function where(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator, value: any): xsql;
+export function where(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator | any[], value: any): xsql;
 /**
+ * ```js
+ * xsql()
+ *   .where({ id: 1 })
+ *   .where('id', '=', 1)
+ *   .where('id', '>', 1)
+ *   .where('id', 'find_in_set', 1)
+ *   .where('id', 'between', [1,2])
+ *   .where('id', 'in', [1,2])
+ *   .where('name', 'like', '%john%')
+ *   .where('id = ? AND age > ?', [1, 18])
+ *   .where('money > 0', [])
+ *   .where('MATCH(title, content) AGAINST(? IN NATURAL LANGUAGE MODE)', [keyword])
+ * ```
  * @this xsql
  * @param {(string|KeyValuePair|(q: xsql) => {})} input
- * @param {Operator} operator
+ * @param {Operator|Array} operator
  * @param {*} value
  * @returns {xsql}
  */
-export function and(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator, value: any): xsql;
+export function and(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator | any[], value: any): xsql;
 /**
+ * ```js
+ * xsql()
+ *   .where({ id: 1 })
+ *   .where('id', '=', 1)
+ *   .where('id', '>', 1)
+ *   .where('id', 'find_in_set', 1)
+ *   .where('id', 'between', [1,2])
+ *   .where('id', 'in', [1,2])
+ *   .where('name', 'like', '%john%')
+ *   .where('id = ? AND age > ?', [1, 18])
+ *   .where('money > 0', [])
+ *   .where('MATCH(title, content) AGAINST(? IN NATURAL LANGUAGE MODE)', [keyword])
+ * ```
  * @this xsql
  * @param {(string|KeyValuePair|(q: xsql) => {})} input
- * @param {Operator} operator
+ * @param {Operator|Array} operator
  * @param {*} value
  * @returns {xsql}
  */
-export function or(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator, value: any): xsql;
+export function or(this: import("./"), input: string | KeyValuePair | ((q: xsql) => {}), operator: Operator | any[], value: any): xsql;
 /**
  * @this xsql
  * @param {('*'|string|string[])} input
