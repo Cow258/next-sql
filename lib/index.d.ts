@@ -32,6 +32,7 @@ declare class xsql {
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql").PoolConnection): {
+            /** @private */
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
             rollback(): Promise<any>;
@@ -52,12 +53,6 @@ declare class xsql {
         escape(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
-        /**
-         * @namespace xsql
-         * @constructs xsql
-         * @param {string} hostId
-         * @returns {xsql}
-         */
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
         query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
@@ -313,6 +308,7 @@ declare function getClient(client: CLIENTS): {
     getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
     query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("mysql").PoolConnection): {
+        /** @private */
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
         rollback(): Promise<any>;
@@ -333,12 +329,6 @@ declare function getClient(client: CLIENTS): {
     escape(value: any): string;
     init(config: any): void;
     close(): Promise<any>;
-    /**
-     * @namespace xsql
-     * @constructs xsql
-     * @param {string} hostId
-     * @returns {xsql}
-     */
     _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
     query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
