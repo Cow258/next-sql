@@ -19,6 +19,8 @@ declare const isInit: boolean;
 declare const logger: (msg: string) => void;
 declare function escape(value: any): string;
 type escape = typeof import("mysql2").escape;
+declare function escapeId(value: any): string;
+type escapeId = typeof import("mysql2").escapeId;
 /** @param {PoolClusterConfig} config */
 declare function init(config: any): void;
 declare function close(): Promise<any>;

@@ -26,16 +26,16 @@ declare class xsql {
         isInit: boolean;
         logger: (msg: string) => void;
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+        escapeId(value: string, forbidQualified?: boolean | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
         close(): Promise<any>;
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
         query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql").PoolConnection): {
-            /** @private */
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
-            rollback(): Promise<any>;
+            rollback(): Promise<any>; /** @private */
             release(): void;
         };
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
@@ -51,6 +51,7 @@ declare class xsql {
         isInit: boolean;
         logger: (msg: string) => void;
         escape(value: any): string;
+        escapeId(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
         _checkInit(): Promise<void>;
@@ -74,55 +75,6 @@ declare class xsql {
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined>): string;
         init(config: import("./clients/database-js").ConfigOptions): void;
         close(): null;
         _checkInit(): Promise<void>;
@@ -183,7 +135,8 @@ declare class xsql {
     toOne: typeof toOne | undefined;
     toMany: typeof toMany | undefined;
     fromOne: typeof fromOne | undefined;
-    escape: typeof import("mysql").escape | typeof import("@planetscale/database").format | undefined;
+    escape: any;
+    escapeId: any;
     /** Get connection of this instance */
     getConnection: (() => Promise<import("mysql").PoolConnection | import("@planetscale/database").Connection | import("mysql2").PoolConnection>) | undefined;
     /** Use client native query for fallback */
@@ -302,16 +255,16 @@ declare function getClient(client: CLIENTS): {
     isInit: boolean;
     logger: (msg: string) => void;
     escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+    escapeId(value: string, forbidQualified?: boolean | undefined): string;
     init(config: import("mysql").PoolClusterConfig): void;
     close(): Promise<any>;
     _checkInit(): Promise<void>;
     getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
     query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
     getTransaction(conn: import("mysql").PoolConnection): {
-        /** @private */
         beginTransaction(): Promise<any>;
         commit(): Promise<any>;
-        rollback(): Promise<any>;
+        rollback(): Promise<any>; /** @private */
         release(): void;
     };
     toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
@@ -327,6 +280,7 @@ declare function getClient(client: CLIENTS): {
     isInit: boolean;
     logger: (msg: string) => void;
     escape(value: any): string;
+    escapeId(value: any): string;
     init(config: any): void;
     close(): Promise<any>;
     _checkInit(): Promise<void>;
@@ -350,55 +304,6 @@ declare function getClient(client: CLIENTS): {
     isLog: boolean;
     isInit: boolean;
     logger: (msg: string) => void;
-    escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined)[] | {
-        toString: () => string;
-    } | null | undefined>): string;
     init(config: import("./clients/database-js").ConfigOptions): void;
     close(): null;
     _checkInit(): Promise<void>;

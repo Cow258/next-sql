@@ -6,6 +6,7 @@ declare const _exports: {
         isInit: boolean;
         logger: (msg: string) => void;
         escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+        escapeId(value: string, forbidQualified?: boolean | undefined): string;
         init(config: import("mysql").PoolClusterConfig): void;
         close(): Promise<any>;
         _checkInit(): Promise<void>;
@@ -30,6 +31,7 @@ declare const _exports: {
         isInit: boolean;
         logger: (msg: string) => void;
         escape(value: any): string;
+        escapeId(value: any): string;
         init(config: any): void;
         close(): Promise<any>;
         _checkInit(): Promise<void>;
@@ -53,55 +55,6 @@ declare const _exports: {
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined)[] | {
-            toString: () => string;
-        } | null | undefined>): string;
         init(config: databaseJs.ConfigOptions): void;
         close(): null;
         _checkInit(): Promise<void>;

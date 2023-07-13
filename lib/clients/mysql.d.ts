@@ -19,6 +19,8 @@ declare const isInit: boolean;
 declare const logger: (msg: string) => void;
 declare function escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
 type escape = typeof import("mysql").escape;
+declare function escapeId(value: string, forbidQualified?: boolean | undefined): string;
+type escapeId = typeof import("mysql").escapeId;
 /** @param {PoolClusterConfig} config */
 declare function init(config: import("mysql").PoolClusterConfig): void;
 declare function close(): Promise<any>;

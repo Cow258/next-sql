@@ -5,7 +5,6 @@ export type Command = import('../index').Command;
 export type database = typeof import("@planetscale/database");
 export type Connection = import('@planetscale/database').Connection;
 export type ExecutedQuery = import('@planetscale/database').ExecutedQuery;
-export type format = typeof import("@planetscale/database").format;
 export type Row = {
     [field: string]: string | number | boolean | Buffer | Date;
 };
@@ -30,55 +29,8 @@ declare const pool: Map<string, Connection>;
 declare const isLog: boolean;
 declare const isInit: boolean;
 declare const logger: (msg: string) => void;
-declare function escape(query: string, values: (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | Record<string, string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | (string | number | boolean | Date | any | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined)[] | {
-    toString: () => string;
-} | null | undefined>): string;
+type escape = any;
+type escapeId = any;
 /** @param {ConfigOptions} config */
 declare function init(config: ConfigOptions): void;
 declare function close(): null;
