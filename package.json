@@ -5,14 +5,16 @@
   "keywords": [
     "sql",
     "mysql",
-    "kenx",
     "mysql2",
+    "kenx",
     "query",
     "querybuilder",
     "connector",
     "db",
     "database",
-    "rds"
+    "database-js",
+    "rds",
+    "serverless"
   ],
   "author": "Cowboy Ho <info@cow-boy.net>",
   "license": "Apache-2.0",

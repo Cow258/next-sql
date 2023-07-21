@@ -1,7 +1,5 @@
 # next-sql
 
-> ### ⚠️⚠️⚠️ Attention ⚠️⚠️⚠️
->
 > The project is still in the pre-alpha stage\
 > 🏃🏻‍♂️ We are working in progress now... 💪🏻
 
@@ -63,7 +61,9 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
 - Pagination with navigation bar
 - Transaction support
 - Module customization
-- Base on [mysqljs/mysql](https://github.com/mysqljs/mysql)
+- Support [mysqljs/mysql](https://github.com/mysqljs/mysql)
+- Support [sidorares/node-mysql2](https://github.com/sidorares/node-mysql2)
+- Support [PlanetScale/database-js](https://github.com/planetscale/database-js)
 
 > 🏃🏻‍♂️ Working on progress...\
 > [See our roadmap](https://github.com/Cow258/next-sql/projects)
@@ -86,12 +86,21 @@ yarn add next-sql
 
 # ⚙️ Configuration <a name="configuration"></a>
 
-We will pass your config into `mysql` directly.\
+> ### ⚠️⚠️⚠️ Serverless Reminder ⚠️⚠️⚠️
+>
+> To optimize your serverless setup, consider using a service like PlanetScale that allows for HTTP-based connections. By doing so, you can avoid encountering numerous connection issues on your database server.
+
+> ### ⚠️⚠️⚠️ Edge Runtime Reminder ⚠️⚠️⚠️
+>
+> As the origin MySQL connection is based on a socket, it is essential to avoid using packages like `mysql` or `mysql2`. Instead, opt for a solution like PlanetScale that enables HTTP-based connections, ensuring compatibility with your edge runtime environment.
+
+We will pass your config into `mysql`/`mysql2`/`database-js` directly.\
 You can find more detail from the following link
 
-https://github.com/mysqljs/mysql#connection-options
-
-https://github.com/mysqljs/mysql#pool-options
+https://github.com/mysqljs/mysql#connection-options \
+https://github.com/mysqljs/mysql#pool-options \
+https://github.com/sidorares/node-mysql2#using-connection-pools \
+https://github.com/planetscale/database-js#usage
 
 **Options:**\
 All config of this level will apply into each hosts.\
@@ -113,19 +122,22 @@ xsql.init({
   acquireTimeout: 120000,
   timeout: 120000,
   charset: 'utf8mb4',
-  default: 'default', // <- The default host id
+  default: 'staging', // <- The default host id
 
   // Configs for each hosts
   hosts: {
     // At least one host config is required
-    default: {
-      // <- Host ID
+    // The required default host id here
+    staging: {
+      client: 'database-js', // <- Required
       host: 'example.com',
       user: 'username',
       password: 'password',
       database: 'dbname',
     },
-    'HostId-2': {
+    // Another host id
+    dev: {
+      client: 'mysql2', // <- Required
       host: 'example2.com',
       user: 'username',
       password: 'password',
@@ -153,7 +165,7 @@ const rows = await xsql().read('table')
 ### Fallback Query
 
 ```js
-// Will return the origin raw data from mysql node module
+// Will return the origin raw data from mysql/mysql2/database-js
 const result = await xsql().query('SELECT * FROM `user` WHERE id = ?', [5])
 ```
 
@@ -211,42 +223,7 @@ users = [
     age: 56,
     birthAt: '1965-01-01T00:00:00.000Z',
   },
-  {
-    id: 3,
-    name: 'Mary',
-    computer: 51,
-    pets: '22,23',
-    gender: 'F',
-    age: 42,
-    birthAt: '1979-01-01T00:00:00.000Z',
-  },
-  {
-    id: 4,
-    name: 'Kitty',
-    computer: null,
-    pets: null,
-    gender: 'F',
-    age: 18,
-    birthAt: '2003-01-01T00:00:00.000Z',
-  },
-  {
-    id: 5,
-    name: 'Sam',
-    computer: null,
-    pets: null,
-    gender: 'M',
-    age: 32,
-    birthAt: '1989-01-01T00:00:00.000Z',
-  },
-  {
-    id: 6,
-    name: 'Kevin',
-    computer: null,
-    pets: '24',
-    gender: 'M',
-    age: 76,
-    birthAt: '1945-01-01T00:00:00.000Z',
-  },
+  ...
 ]
 ```
 
@@ -575,19 +552,14 @@ const linkImg = (query) => {
   query
     .select('userId,userName,userAvatar,userAlbum')
     .toOne('userAvatar:imgTable.imgId', {
-      query: q => q
-        .select('imgId,imgUrl'),
+      query: (q) => q.select('imgId,imgUrl'),
     })
     .toMany('userAlbum:imgTable.imgId', {
-      query: q => q
-        .select('imgId,imgUrl'),
+      query: (q) => q.select('imgId,imgUrl'),
     })
 }
 // Apply on query
-const users = await xsql()
-  .where({ userId: 1 })
-  .extend(linkImg)
-  .read('users')
+const users = await xsql().where({ userId: 1 }).extend(linkImg).read('users')
 ```
 
 You can import frequently used queries and apply them via `extend`
@@ -775,6 +747,8 @@ Parameters:
     You can provide the key for store all incoming data, this key will add to the end of current row object
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
+  - `override`: (q, currentIds) => `Row[]`
+    Override the origin mapping query and return rows result.
 
 #### toMany(mapper, options) <a name="tomany"></a>
 
@@ -807,6 +781,8 @@ Parameters:
     You can provide the key for store all incoming data, this key will add to the end of current row object
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
+  - `override`: (q, currentIds) => `Row[]`
+    Override the origin mapping query and return rows result.
 
 #### fromOne(addonKey, mapper, options) <a name="fromone"></a>
 
@@ -826,6 +802,8 @@ Parameters:
     also you can do unlimited layer relationship.
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
+  - `override`: (q, currentIds) => `Row[]`
+    Override the origin mapping query and return rows result.
 
 #### fromMany() <a name="frommany"></a>
 
