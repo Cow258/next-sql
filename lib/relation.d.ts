@@ -4,6 +4,7 @@ export type RelationOptions = {
     targetTable: string;
     targetKey: string;
     addonKey: string;
+    jsonKeys: string[];
     splitter: string;
     omitMapperKey: boolean;
     filter: (row: ReadResult) => (row: ReadResult) => any;
@@ -24,6 +25,7 @@ export function _relationFetch(this: import("./"), currentRows: ReadResult, xsql
  * @param {'currentKey:targetTable.targetKey'} mapper
  * @param {Object} options
  * @param {string} options.addonKey
+ * @param {string[]} options.jsonKeys
  * @param {boolean} options.omitMapperKey
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
  * @param {(row: ReadResult) => (row: ReadResult)} options.map
@@ -32,6 +34,7 @@ export function _relationFetch(this: import("./"), currentRows: ReadResult, xsql
  */
 export function toOne(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
     addonKey: string;
+    jsonKeys: string[];
     omitMapperKey: boolean;
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
@@ -43,6 +46,7 @@ export function toOne(this: import("./"), mapper: 'currentKey:targetTable.target
  * @param {'currentKey:targetTable.targetKey'} mapper
  * @param {Object} options
  * @param {string} options.addonKey
+ * @param {string[]} options.jsonKeys
  * @param {boolean} options.omitMapperKey
  * @param {string} options.splitter
  * @param {(jsonArray: []) => string[]} options.arrayMapper
@@ -53,6 +57,7 @@ export function toOne(this: import("./"), mapper: 'currentKey:targetTable.target
  */
 export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
     addonKey: string;
+    jsonKeys: string[];
     omitMapperKey: boolean;
     splitter: string;
     arrayMapper: (jsonArray: []) => string[];
@@ -66,6 +71,7 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
  * @param {string} addonKey
  * @param {'currentKey:targetTable.targetKey'} mapper
  * @param {Object} options
+ * @param {string[]} options.jsonKeys
  * @param {boolean} options.omitMapperKey
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
  * @param {(row: ReadResult) => (row: ReadResult)} options.map
@@ -73,6 +79,7 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
  * @param {(q: xsql, currentIds: any[]) => {}} options.override
  */
 export function fromOne(this: import("./"), addonKey: string, mapper: 'currentKey:targetTable.targetKey', options?: {
+    jsonKeys: string[];
     omitMapperKey: boolean;
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
