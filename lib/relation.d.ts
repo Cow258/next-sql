@@ -10,7 +10,7 @@ export type RelationOptions = {
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
     query: (q: xsql) => {};
-    override: (q: xsql, targetIds: []) => {};
+    override: (q: xsql, targetIds: [], row: any, ReadResult: any) => {};
 };
 export type xsql = import('./');
 export type ReadResult = import('./array').ReadResult;

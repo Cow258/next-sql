@@ -82,6 +82,8 @@
     "**/*.test.js",
     "**/*.config.js",
     "**/*.setup.js",
+    "cli",
+    "testConfig.js",
   ],
   "include": [
     "**/*.js",

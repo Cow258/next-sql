@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mysql:
+    restart: always
+    image: mysql:8.0.32
+    container_name: xsql
+    volumes:
+      - ./db/mydir:/mydir
+      - ./db/datadir:/var/lib/mysql
+      - ./db/conf/my.cnf:/etc/my.cnf
+      - ./db/source:/docker-entrypoint-initdb.d
+    environment:
+      - 'MYSQL_HOST=127.0.0.1'
+      - 'MYSQL_ROOT_PASSWORD=xsql'
+      - 'MYSQL_DATABASE=xsql'
+      - 'TZ=Asia/HongKong'
+    ports:
+      - 3306:3306

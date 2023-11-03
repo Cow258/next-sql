@@ -19,76 +19,8 @@ declare class xsql {
     hostId: string | undefined;
     conn: any;
     isTransaction: boolean | undefined;
-    client: {
-        client: typeof import("mysql");
-        pool: import("mysql").PoolCluster;
-        isLog: boolean;
-        isInit: boolean;
-        logger: (msg: string) => void;
-        escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
-        escapeId(value: string, forbidQualified?: boolean | undefined): string;
-        init(config: import("mysql").PoolClusterConfig): void;
-        close(): Promise<any>;
-        _checkInit(): Promise<void>;
-        getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
-        query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
-        getTransaction(conn: import("mysql").PoolConnection): {
-            beginTransaction(): Promise<any>;
-            commit(): Promise<any>;
-            rollback(): Promise<any>; /** @private */
-            release(): void;
-        };
-        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-            primaryKeys: Set<any>;
-            sumKeys: Set<any>;
-            jsonKeys: string[];
-        }): [sql: string, params: any[]];
-        toRaw(sql: string, params: any[]): string;
-    } | {
-        client: typeof import("mysql2");
-        pool: import("mysql2").PoolCluster;
-        isLog: boolean;
-        isInit: boolean;
-        logger: (msg: string) => void;
-        escape(value: any): string;
-        escapeId(value: any): string;
-        init(config: any): void;
-        close(): Promise<any>;
-        _checkInit(): Promise<void>;
-        getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
-        getTransaction(conn: import("mysql2").PoolConnection): {
-            beginTransaction(): Promise<any>;
-            commit(): Promise<any>;
-            rollback(): Promise<any>;
-            release(): void;
-        };
-        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-            primaryKeys: Set<any>;
-            sumKeys: Set<any>;
-            jsonKeys: string[];
-        }): [sql: string, params: any[]];
-        toRaw(sql: string, params: any[]): string;
-    } | {
-        client: typeof import("@planetscale/database");
-        pool: Map<string, import("@planetscale/database").Connection>;
-        isLog: boolean;
-        isInit: boolean;
-        logger: (msg: string) => void;
-        init(config: import("./clients/database-js").ConfigOptions): void;
-        close(): null;
-        _checkInit(): Promise<void>;
-        getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
-        query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
-        getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
-        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-            primaryKeys: Set<any>;
-            sumKeys: Set<any>;
-            jsonKeys: string[];
-        }): [sql: string, params: any[]];
-        toRaw(sql: string, params: any[]): string;
-    } | undefined;
-    isLog: boolean | undefined;
+    client: any;
+    isLog: any;
     /**
      * @type {State}
      */
@@ -138,9 +70,9 @@ declare class xsql {
     escape: any;
     escapeId: any;
     /** Get connection of this instance */
-    getConnection: (() => Promise<import("mysql").PoolConnection | import("@planetscale/database").Connection | import("mysql2").PoolConnection>) | undefined;
+    getConnection: (() => Promise<any>) | undefined;
     /** Use client native query for fallback */
-    query: ((sql: any, params: any) => Promise<any[]>) | undefined;
+    query: ((sql: any, params: any) => Promise<any>) | undefined;
     /**
      * Render from current state info pre-query SQL statement.\
      * Read Example:
@@ -207,7 +139,6 @@ type HostOptions = {
     password: string;
     database: string;
 };
-import command = require("./command");
 type State = {
     conditions: Conditions;
     select: string;
@@ -222,6 +153,7 @@ type State = {
     relation: RelationOptions[];
 };
 import builder = require("./builder");
+import command = require("./command");
 import { pagination } from "./pagination";
 import { toOne } from "./relation";
 import { toMany } from "./relation";
@@ -232,9 +164,115 @@ declare var defaultHost: string;
 declare var options: HostOptions;
 declare var hosts: HostOptions;
 declare var pools: {};
-import clients = require("./clients");
+declare namespace clients {
+    const mysql: {
+        client: typeof import("mysql");
+        pool: import("mysql").PoolCluster;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
+        escapeId(value: string, forbidQualified?: boolean | undefined): string;
+        init(config: import("mysql").PoolClusterConfig): void;
+        close(): Promise<any>;
+        _checkInit(): Promise<void>;
+        getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
+        query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("mysql").PoolConnection): {
+            beginTransaction(): Promise<any>;
+            commit(): Promise<any>;
+            rollback(): Promise<any>;
+            release(): void;
+        };
+        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
+    };
+    const mysql2: {
+        client: typeof import("mysql2");
+        pool: import("mysql2").PoolCluster;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        escape(value: any): string;
+        escapeId(value: any): string;
+        init(config: any): void;
+        close(): Promise<any>;
+        _checkInit(): Promise<void>;
+        getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
+        getTransaction(conn: import("mysql2").PoolConnection): {
+            beginTransaction(): Promise<any>;
+            commit(): Promise<any>;
+            rollback(): Promise<any>;
+            release(): void;
+        };
+        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
+    };
+    const databaseJs: {
+        client: typeof import("@planetscale/database");
+        pool: Map<string, import("@planetscale/database").Connection>;
+        isLog: boolean;
+        isInit: boolean;
+        logger: (msg: string) => void;
+        init(config: import("./clients/database-js").ConfigOptions): void;
+        close(): null;
+        _checkInit(): Promise<void>;
+        getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
+        query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
+        getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
+        toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
+            primaryKeys: Set<any>;
+            sumKeys: Set<any>;
+            jsonKeys: string[];
+        }): [sql: string, params: any[]];
+        toRaw(sql: string, params: any[]): string;
+    };
+}
 /**
- * Initializing the Library
+ * Initializing the Library \
+ * **Example:**
+ * ```js
+ * const xsql = require('xsql')
+ * require('xsql/clients/mysql2')
+ * require('xsql/clients/database-js')
+ *
+ * xsql.init({
+ *  // Each connection is created will use the following default config
+ *  port: 3306,
+ *  connectionLimit: 5,
+ *  waitForConnections: true,
+ *  acquireTimeout: 120000,
+ *  timeout: 120000,
+ *  charset: 'utf8mb4',
+ *  default: 'staging', // <- The default host id
+ *  hosts: {
+ *    // All hosts config will override default config
+ *    staging: {
+ *      client: 'database-js', // <- Required
+ *      host: 'example.com',
+ *      user: 'username',
+ *      password: 'password',
+ *      database: 'database',
+ *    },
+ *    dev: {
+ *      client: 'mysql2', // <- Required
+ *      host: 'example.com',
+ *      user: 'username',
+ *      password: 'password',
+ *      database: 'database',
+ *    }
+ *  }
+ * })
+ * ```
  * @param {defaultOptions} options
  */
 declare function init(options: {
@@ -248,75 +286,7 @@ declare function init(options: {
     };
 }): void;
 /** @param {CLIENTS} client */
-declare function getClient(client: CLIENTS): {
-    client: typeof import("mysql");
-    pool: import("mysql").PoolCluster;
-    isLog: boolean;
-    isInit: boolean;
-    logger: (msg: string) => void;
-    escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: string | undefined): string;
-    escapeId(value: string, forbidQualified?: boolean | undefined): string;
-    init(config: import("mysql").PoolClusterConfig): void;
-    close(): Promise<any>;
-    _checkInit(): Promise<void>;
-    getConnection(hostId: string): Promise<import("mysql").PoolConnection>;
-    query(conn: import("mysql").PoolConnection, sql: string, params: any[], log: boolean): any[];
-    getTransaction(conn: import("mysql").PoolConnection): {
-        beginTransaction(): Promise<any>;
-        commit(): Promise<any>;
-        rollback(): Promise<any>; /** @private */
-        release(): void;
-    };
-    toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-        primaryKeys: Set<any>;
-        sumKeys: Set<any>;
-        jsonKeys: string[];
-    }): [sql: string, params: any[]];
-    toRaw(sql: string, params: any[]): string;
-} | {
-    client: typeof import("mysql2");
-    pool: import("mysql2").PoolCluster;
-    isLog: boolean;
-    isInit: boolean;
-    logger: (msg: string) => void;
-    escape(value: any): string;
-    escapeId(value: any): string;
-    init(config: any): void;
-    close(): Promise<any>;
-    _checkInit(): Promise<void>;
-    getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-    query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
-    getTransaction(conn: import("mysql2").PoolConnection): {
-        beginTransaction(): Promise<any>;
-        commit(): Promise<any>;
-        rollback(): Promise<any>;
-        release(): void;
-    };
-    toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-        primaryKeys: Set<any>;
-        sumKeys: Set<any>;
-        jsonKeys: string[];
-    }): [sql: string, params: any[]];
-    toRaw(sql: string, params: any[]): string;
-} | {
-    client: typeof import("@planetscale/database");
-    pool: Map<string, import("@planetscale/database").Connection>;
-    isLog: boolean;
-    isInit: boolean;
-    logger: (msg: string) => void;
-    init(config: import("./clients/database-js").ConfigOptions): void;
-    close(): null;
-    _checkInit(): Promise<void>;
-    getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;
-    query(conn: import("@planetscale/database").Connection, sql: string, params: any[], log: boolean): any[];
-    getTransaction(conn: import("@planetscale/database").Connection): Promise<any>;
-    toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
-        primaryKeys: Set<any>;
-        sumKeys: Set<any>;
-        jsonKeys: string[];
-    }): [sql: string, params: any[]];
-    toRaw(sql: string, params: any[]): string;
-};
+declare function getClient(client: CLIENTS): any;
 declare function close(): Promise<any[]>;
 type CLIENTS = import('./clients/constance').CLIENTS;
 type PaginationOptions = import('./pagination').PaginationOptions;

@@ -8,11 +8,14 @@
 const util = require('util')
 
 const xsql = require('../lib/index')
+const testUtils = require('../test/utils')
+require('../lib/clients/mysql2')
+
 
 require('console.table')
 // const is = require('../lib/is')
 
-function xlog(obj) {
+function xLog(obj) {
   console.log(
     util.inspect(
       JSON.parse(
@@ -26,21 +29,12 @@ xsql.init({
   defaultHost: 'test',
   hosts: {
     test: {
-      client: 'mysql',
+      client: 'mysql2',
       host: '127.0.0.1',
-      port: 23306,
-      user: 'testuser',
-      password: 'testpassword',
-      database: 'xsql_test',
+      user: 'root',
+      password: 'xsql',
+      database: 'xsql',
     },
-    // test2: {
-    //   client: 'mysql',
-    //   host: '127.0.0.1',
-    //   port: 23306,
-    //   user: 'testuser',
-    //   password: 'testpassword',
-    //   database: 'xsql_test2',
-    // },
   },
 })
 // console.log(util.inspect(xsql, false, null, true))
@@ -232,37 +226,140 @@ async function main() {
 
 
   // Product Test
-  const [d] = await xsql()
-    .where('price', '>', 0)
-    .where({ id: 14, status: 1, hide: 0 })
-    .toMany('imgs:attinfo.num', {
-      omitMapperKey: true,
-      query: (q) => (q.select('num,w,h')),
+  // const [d] = await xsql()
+  //   .where('price', '>', 0)
+  //   .where({ id: 14, status: 1, hide: 0 })
+  //   .toMany('imgs:attinfo.num', {
+  //     omitMapperKey: true,
+  //     query: (q) => (q.select('num,w,h')),
+  //   })
+  //   .fromOne('others', 'shop:shopProduct.shop', {
+  //     omitMapperKey: true,
+  //     query: (q) => (q
+  //       .where('price', '>', 0)
+  //       .where({ status: 1, hide: 0 })
+  //       .orderBy('`sort`')
+  //       .select('id,shop,imgs,title,`desc`,outsider,price,tag,enable')),
+  //   })
+  //   .toOne('shop:shopInfo.id', {
+  //     omitMapperKey: true,
+  //     query: (q) => {
+  //       q.select('id,name')
+  //     },
+  //   })
+  //   .read('shopProduct')
+  // xlog(d)
+
+
+  // await xsql().delete('items')
+  // const tags = ['a', 'b', 'c']
+  // const rows = []
+  // for (let i = 0; i < 99; i++) {
+  //   rows.push({
+  //     id: i,
+  //     tag: tags[i % 3],
+  //   })
+  // }
+  // await xsql().batchInsert('items', rows)
+
+
+  // for (let i = 0; i < 6; i++) {
+  //   console.log(testUtils.GetLetter(i))
+  // }
+  // const rows = await xsql()
+  //   .select('tag, count(*) as count')
+  //   .groupBy('tag')
+  //   .read('items')
+
+  // const users = (new Array(10)).fill().map((v, i) => ({
+  //   name: testUtils.GetUuid(),
+  //   createAt: Date.now(),
+  //   gender: i % 2 === 0 ? 'M' : 'F',
+  //   age: i + 20,
+  //   amount: 10,
+  //   data: { notification: true },
+  // }))
+  // await xsql().batchInsert('users', users, {
+  //   jsonKeys: ['data'],
+  // })
+
+  const shops = testUtils.GenArray(0, 3).map((i) => ({
+    id: testUtils.GetUuid(),
+    index: i,
+    name: `shop${testUtils.GetLetter(i)}`,
+    createAt: Date.now(),
+  }))
+  const categories = testUtils.GenArray(0, 3).map((i) => ({
+    id: testUtils.GetUuid(),
+    name: `category${testUtils.GetLetter(i)}`,
+  }))
+  const products = testUtils.GenArray(0, 9).map((i) => ({
+    id: testUtils.GetUuid(),
+    index: i,
+    name: `product${testUtils.GetLetter(i)}`,
+    shop: shops[i % 3].id,
+    category: categories[i % 3].id,
+    tags: [i, i + 1, i + 2].join(','),
+    createAt: Date.now(),
+  }))
+  const users = testUtils.GenArray(0, 9).map((i) => ({
+    name: testUtils.GetUuid(),
+    favorites: [products[i].id, products[i === 8 ? 0 : i + 1].id].join(','),
+    createAt: Date.now(),
+    data: { bookmarks: [products[i].id] },
+  }))
+
+  await xsql().transaction(async (t) => {
+    await t().batchInsert('shops', shops)
+    await t().batchInsert('categories', categories)
+    await t().batchInsert('products', products)
+    await t().batchInsert('users', users, {
+      jsonKeys: ['data'],
     })
-    .fromOne('others', 'shop:shopProduct.shop', {
-      omitMapperKey: true,
-      query: (q) => (q
-        .where('price', '>', 0)
-        .where({ status: 1, hide: 0 })
-        .orderBy('`sort`')
-        .select('id,shop,imgs,title,`desc`,outsider,price,tag,enable')),
+  })
+
+  // const rows = await xsql()
+  //   .log(true)
+  //   .where({ id: products[1].id })
+  //   .toOne('shop:shops.id', {
+  //     select: ['id', 'createAt'],
+  //   })
+  //   .toOne('category:categories.id', {
+  //     query: q => q
+  //       .select('id')
+  //       .map(row => {
+  //         row.name = 'testing'
+  //         return row
+  //       }),
+  //   })
+  //   .toOne('tags:items.id', {
+  //     addonKey: 'items',
+  //   })
+  //   .read('products')
+
+  const rows = await xsql()
+    .where('name', 'in', users.map(u => u.name))
+    .toMany('data:products.id', {
+      splitter: '$.bookmarks[]',
     })
-    .toOne('shop:shopInfo.id', {
-      omitMapperKey: true,
-      query: (q) => {
-        q.select('id,name')
-      },
-    })
-    .read('shopProduct')
-  xlog(d)
+    .read('users')
+
+  testUtils.xLog(rows)
+
+  await xsql().transaction(async (t) => {
+    await t().where('id', 'in', shops.map(s => s.id)).delete('shops')
+    await t().where('id', 'in', categories.map(c => c.id)).delete('categories')
+    await t().where('id', 'in', products.map(p => p.id)).delete('products')
+    await t().where('name', 'in', users.map(u => u.name)).delete('users')
+  })
 
   process.exit()
 }
 main()
 
 
-  // (async () => {
-  // })()
+// (async () => {
+// })()
 
 // sql.init({
 //   defaultHost: 'default',

@@ -113,6 +113,9 @@ Also this config options as same as mysql [connection options](https://github.co
 
 ```js
 const xsql = require('next-sql')
+require('next-sql/clients/mysql2')
+require('next-sql/clients/database-js')
+
 // It will create PoolCluster for each hosts.
 xsql.init({
   // Each connection is created will use the following default config
@@ -747,7 +750,7 @@ Parameters:
     You can provide the key for store all incoming data, this key will add to the end of current row object
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
-  - `override`: (q, currentIds) => `Row[]`
+  - `override`: (q, currentIds, currentRows) => `Row[]`
     Override the origin mapping query and return rows result.
 
 #### toMany(mapper, options) <a name="tomany"></a>
@@ -781,7 +784,7 @@ Parameters:
     You can provide the key for store all incoming data, this key will add to the end of current row object
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
-  - `override`: (q, currentIds) => `Row[]`
+  - `override`: (q, currentIds, currentRows) => `Row[]`
     Override the origin mapping query and return rows result.
 
 #### fromOne(addonKey, mapper, options) <a name="fromone"></a>
@@ -802,7 +805,7 @@ Parameters:
     also you can do unlimited layer relationship.
   - `omitMapperKey`: `[default=false]`\
     Auto remove the mapping key from fetched rows.
-  - `override`: (q, currentIds) => `Row[]`
+  - `override`: (q, currentIds, currentRows) => `Row[]`
     Override the origin mapping query and return rows result.
 
 #### fromMany() <a name="frommany"></a>
