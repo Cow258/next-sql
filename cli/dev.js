@@ -9,7 +9,7 @@ const util = require('util')
 
 const xsql = require('../lib/index')
 const testUtils = require('../test/utils')
-require('../lib/clients/mysql2')
+require('../clients/mysql2')
 
 
 require('console.table')

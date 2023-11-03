@@ -1,7 +1,7 @@
 const xsql = require('../lib')
 const utils = require('./utils')
 
-require('../lib/clients/mysql2')
+require('../clients/mysql2')
 
 describe('Pagination', () => {
   beforeAll(async () => {

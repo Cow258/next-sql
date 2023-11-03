@@ -3,48 +3,33 @@
 /** @typedef {import('../index').State} State */
 /** @typedef {import('../index').Command} Command */
 
-/** @typedef {import('@planetscale/database')} database */
-/** @typedef {import('@planetscale/database').Connection} Connection */
-/** @typedef {import('@planetscale/database').ExecutedQuery} ExecutedQuery */
-/** @typedef {import('sqlstring').escape} escape */
-/** @typedef {import('sqlstring').escapeId} escapeId */
+/** @typedef {import('mysql2')} mysql2 */
+/** @typedef {import('mysql2').PoolCluster} PoolCluster */
+/** @typedef {import('mysql2').PoolClusterConfig} PoolClusterConfig */
+/** @typedef {import('mysql2').PoolConnection} PoolConnection */
+/** @typedef {import('mysql2').OkPacket} OkPacket */
+/** @typedef {import('mysql2').escape} escape */
+/** @typedef {import('mysql2').escapeId} escapeId */
 /** @typedef {{ [field: string] : (string|number|Date|boolean|Buffer) }} Row */
 
 /** @typedef {(row: Row) => Row[]} Filter */
-/** @typedef {Promise<Row[]|ExecutedQuery>} QueryReturn */
-
-/**
- * @typedef {Object} HostOptions
- * @property {"database-js"} client
- * @property {string} host
- * @property {string} user
- * @property {string} password
- * @property {string} database
- */
-/**
- * @typedef {Object} ConfigOptions
- * @property {boolean} isLog
- * @property {()=>{}} logger
- * @property {Object<string,HostOptions>} pools
- */
+/** @typedef {Promise<Row[]|OkPacket>} QueryReturn */
 
 const chalk = require('chalk')
-const SqlString = require('sqlstring')
 
-const { getLastItem } = require('../array')
-const { TYPE } = require('../builder')
-const xsql = require('../index')
-const is = require('../is')
+const { getLastItem } = require('../lib/array')
+const { TYPE } = require('../lib/builder')
+const xsql = require('../lib/index')
+const is = require('../lib/is')
 
 function _timeDiff(ms) {
   return chalk.underline(`${Date.now() - ms}ms`)
 }
 
-const databaseJs = {
-  /** @type {database} */
-  client: require('@planetscale/database'),
-  /** @type {Map<string,Connection>} */
-  pool: new Map(),
+const mysql2 = {
+  client: require('mysql2'),
+  /** @type {PoolCluster} */
+  pool: null,
   /** @type {boolean} */
   isLog: false,
   /** @type {boolean} */
@@ -53,17 +38,17 @@ const databaseJs = {
   logger: () => { },
   /** @type {escape} */
   escape(...args) {
-    return SqlString.escape(...args)
+    return this.client.escape(...args)
   },
   /** @type {escapeId} */
   escapeId(...args) {
-    return SqlString.escapeId(...args)
+    return this.client.escapeId(...args)
   },
 
-  /** @param {ConfigOptions} config */
+  /** @param {PoolClusterConfig} config */
   init(config) {
     if (this.isInit) return
-    // console.info('xsql: client init => databaseJs', config)
+    // console.info('xsql: client init => mysql2', config)
     const {
       isLog,
       logger,
@@ -71,26 +56,24 @@ const databaseJs = {
     } = config
     this.isLog = isLog
     this.logger = logger
+    this.pool = this.client.createPoolCluster({
+      removeNodeErrorCount: Infinity,
+      restoreNodeTimeout: 1,
+    })
     Object.keys(pools).forEach((hostId) => {
-      const { host, user, password } = pools[hostId]
-      this.pool.set(hostId, this.client.connect({
-        cast: (field, value) => {
-          if (field.type === 'INT64' || field.type === 'UINT64') {
-            return is.defined(value) ? Number(value) : null
-          }
-          return this.client.cast(field, value)
-        },
-        format: SqlString.format,
-        host,
-        username: user,
-        password,
-      }))
+      const { client, ...options } = pools[hostId]
+      this.pool.add(hostId, options)
     })
     this.isInit = true
   },
 
   close() {
-    return null
+    return new Promise((resolve, reject) => {
+      this.pool.end((err) => {
+        if (err) return reject(err)
+        resolve()
+      })
+    })
   },
 
   /** @private */
@@ -106,16 +89,22 @@ const databaseJs = {
 
   /**
    * @param {string} hostId
-   * @returns {Promise<Connection>}
+   * @returns {Promise<PoolConnection>}
    */
   async getConnection(hostId) {
     await this._checkInit()
-    return this.pool.get(hostId)
+    const connection = await new Promise((resolve, reject) => {
+      this.pool.getConnection(hostId, (err, conn) => {
+        if (err) { reject(err); return }
+        resolve(conn)
+      })
+    })
+    return connection
   },
 
 
   /**
-   * @param {Connection} conn
+   * @param {PoolConnection} conn
    * @param {string} sql
    * @param {any[]} params
    * @param {boolean} log
@@ -126,36 +115,45 @@ const databaseJs = {
     const isLog = is.defined(log) ? log : this.isLog
     const self = this
     const startAt = Date.now()
-    try {
-      const result = await conn.execute(sql, params)
-      if (isLog) self.logger(`${_timeDiff(startAt)} ${result.statement}`)
-      if (sql.startsWith('SELECT')) return result.rows
-      return result
-    } catch (error) {
-      if (isLog) self.logger(`${_timeDiff(startAt)} ${SqlString.format(sql, params)}`)
-      error.stack = `${new Error('Query Error').stack}\n${error.stack}`
-      throw error
-    }
+    const result = await new Promise((resolve, reject) => {
+      conn.query(sql, params, function (err, rows) {
+        if (isLog) self.logger(`${_timeDiff(startAt)} ${this.sql}`)
+        if (err) {
+          err.stack = `${new Error('Query Error').stack}\n${err.stack}`
+          reject(err)
+        } else {
+          resolve(rows)
+        }
+      })
+    })
+    return result
   },
 
 
   /**
-   * @param {Connection} conn
+   * @param {PoolConnection} conn
    */
   getTransaction(conn) {
-    return new Promise((resolve) => {
-      conn.transaction(tx => (
-        new Promise((txResolve, txReject) => {
-          resolve({
-            getConnection: () => (tx),
-            beginTransaction: () => { },
-            commit: () => txResolve(),
-            rollback: () => txReject(),
-            release: () => { },
-          })
+    return {
+      beginTransaction() {
+        return new Promise((res, rej) => {
+          conn.beginTransaction(err => err ? rej(err) : res())
         })
-      ))
-    })
+      },
+      commit() {
+        return new Promise((res, rej) => {
+          conn.commit(err => err ? rej(err) : res())
+        })
+      },
+      rollback() {
+        return new Promise((res) => {
+          conn.rollback(res)
+        })
+      },
+      release() {
+        conn.release()
+      },
+    }
   },
 
   /**
@@ -244,7 +242,6 @@ const databaseJs = {
     let isStartBracket = true
     conditions.forEach(({ type, field, operator, value, connector }, i) => {
       if (i === 0) sql.push('WHERE')
-
       switch (type) {
         case TYPE.NORMAL: {
           if (!isStartBracket && sql.length) sql.push(connector)
@@ -334,9 +331,9 @@ const databaseJs = {
    * @returns {string}
    */
   toRaw(sql, params) {
-    return SqlString.format(sql, params)
+    return this.client.format(sql, params)
   },
 }
 
-xsql.clients['database-js'] = databaseJs
-module.exports = databaseJs
+xsql.clients.mysql2 = mysql2
+module.exports = mysql2

@@ -17,10 +17,10 @@
 
 const chalk = require('chalk')
 
-const { getLastItem } = require('../array')
-const { TYPE } = require('../builder')
-const xsql = require('../index')
-const is = require('../is')
+const { getLastItem } = require('../lib/array')
+const { TYPE } = require('../lib/builder')
+const xsql = require('../lib/index')
+const is = require('../lib/is')
 
 function _timeDiff(ms) {
   return chalk.underline(`${Date.now() - ms}ms`)

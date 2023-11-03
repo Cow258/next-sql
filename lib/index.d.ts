@@ -186,7 +186,7 @@ declare namespace clients {
         };
         toStatement(cmd: command.Command, table: string, state: State, data: any, options?: {
             primaryKeys: Set<any>;
-            sumKeys: Set<any>;
+            sumKeys: Set<any>; /** Delete rows from table */
             jsonKeys: string[];
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
@@ -203,7 +203,7 @@ declare namespace clients {
         close(): Promise<any>;
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("mysql2").PoolConnection>;
-        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[]; /** @private */
+        query(conn: import("mysql2").PoolConnection, sql: string, params: any[], log: boolean): any[];
         getTransaction(conn: import("mysql2").PoolConnection): {
             beginTransaction(): Promise<any>;
             commit(): Promise<any>;
@@ -223,7 +223,7 @@ declare namespace clients {
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        init(config: import("./clients/database-js").ConfigOptions): void;
+        init(config: import("../clients/database-js").ConfigOptions): void;
         close(): null;
         _checkInit(): Promise<void>;
         getConnection(hostId: string): Promise<import("@planetscale/database").Connection>;

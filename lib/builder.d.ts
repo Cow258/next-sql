@@ -5,7 +5,7 @@ export type Condition = {
     connector: Connector;
 };
 export type xsql = import('./');
-export type Row = import('./clients/mysql').Row;
+export type Row = import('../clients/mysql').Row;
 export type KeyValuePair = {
     [key: string]: any;
 };

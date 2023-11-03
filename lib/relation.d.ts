@@ -30,7 +30,7 @@ export function _relationFetch(this: import("./"), currentRows: ReadResult, xsql
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
  * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
- * @param {(q: xsql, currentIds: any[]) => {}} options.override
+ * @param {(q: xsql, currentIds: any[], currentRows: any[]) => {}} options.override
  */
 export function toOne(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
     addonKey: string;
@@ -39,7 +39,7 @@ export function toOne(this: import("./"), mapper: 'currentKey:targetTable.target
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
     query: (q: xsql) => {};
-    override: (q: xsql, currentIds: any[]) => {};
+    override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");
 /**
  * @this xsql
@@ -53,7 +53,7 @@ export function toOne(this: import("./"), mapper: 'currentKey:targetTable.target
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
  * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
- * @param {(q: xsql, currentIds: any[]) => {}} options.override
+ * @param {(q: xsql, currentIds: any[], currentRows: any[]) => {}} options.override
  */
 export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targetKey', options?: {
     addonKey: string;
@@ -64,7 +64,7 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
     query: (q: xsql) => {};
-    override: (q: xsql, currentIds: any[]) => {};
+    override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");
 /**
  * @this xsql
@@ -76,7 +76,7 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
  * @param {(row: ReadResult) => (row: ReadResult)} options.filter
  * @param {(row: ReadResult) => (row: ReadResult)} options.map
  * @param {(q: xsql) => {}} options.query
- * @param {(q: xsql, currentIds: any[]) => {}} options.override
+ * @param {(q: xsql, currentIds: any[], currentRows: any[]) => {}} options.override
  */
 export function fromOne(this: import("./"), addonKey: string, mapper: 'currentKey:targetTable.targetKey', options?: {
     jsonKeys: string[];
@@ -84,5 +84,5 @@ export function fromOne(this: import("./"), addonKey: string, mapper: 'currentKe
     filter: (row: ReadResult) => (row: ReadResult) => any;
     map: (row: ReadResult) => (row: ReadResult) => any;
     query: (q: xsql) => {};
-    override: (q: xsql, currentIds: any[]) => {};
+    override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");
