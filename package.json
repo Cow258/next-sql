@@ -1,6 +1,6 @@
 {
   "name": "next-sql",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Next-gen SQL connector, easy way to query SQL and create relationship linked object.",
   "keywords": [
     "sql",
