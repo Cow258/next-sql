@@ -1,9 +1,11 @@
 # next-sql
 
+[![Coverage Status](https://coveralls.io/repos/github/Cow258/next-sql/badge.svg)](https://coveralls.io/github/Cow258/next-sql)
+
 > The project is still in the pre-alpha stage\
 > 🏃🏻‍♂️ We are working in progress now... 💪🏻
 
-For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/projects/1)
+For more detail, please [see roadmap](https://github.com/Cow258/next-sql/projects/1)
 
 # Table of content
 
@@ -66,7 +68,7 @@ For more detail, please [see v1.0.0 roadmap](https://github.com/Cow258/next-sql/
 - Support [PlanetScale/database-js](https://github.com/planetscale/database-js)
 
 > 🏃🏻‍♂️ Working on progress...\
-> [See our roadmap](https://github.com/Cow258/next-sql/projects)
+> [See our roadmap](https://github.com/Cow258/next-sql/projects/1)
 >
 > - Module customization
 > - To support more databases in the future, such as Postgres, MSSQL, MariaDB, SQLite3, Oracle, Amazon Redshift
