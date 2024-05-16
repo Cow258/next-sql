@@ -1,6 +1,6 @@
 export type xsql = import('./');
 export type State = import('./').State;
-export type ReadResult = import('./array').ReadResult;
+export type ReadResult = import("./array").ReadResult<any>;
 export type PaginationOptions = {
     /**
      * [Default: 1] The current page
@@ -72,7 +72,7 @@ export function paginationBefore(this: import("./")): void;
  * @param {ReadResult} rows
  * @param {State} state
  */
-export function paginationAfter(this: import("./"), rows: ReadResult, state: State): {
+export function paginationAfter(this: import("./"), rows: import("./array").ReadResult<any>, state: State): {
     paginationRows: any[];
     paginationResult: {
         isOutOfRange: boolean;

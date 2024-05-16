@@ -7,19 +7,19 @@ export type RelationOptions = {
     jsonKeys: string[];
     splitter: string;
     omitMapperKey: boolean;
-    filter: (row: ReadResult) => (row: ReadResult) => any;
-    map: (row: ReadResult) => (row: ReadResult) => any;
+    filter: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
+    map: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
     query: (q: xsql) => {};
     override: (q: xsql, targetIds: [], row: any, ReadResult: any) => {};
 };
 export type xsql = import('./');
-export type ReadResult = import('./array').ReadResult;
+export type ReadResult = import("./array").ReadResult<any>;
 /**
  * @this xsql
  * @param {ReadResult} currentRows
  * @param {xsql} xsql
  */
-export function _relationFetch(this: import("./"), currentRows: ReadResult, xsql: xsql): Promise<any[] | undefined>;
+export function _relationFetch(this: import("./"), currentRows: import("./array").ReadResult<any>, xsql: xsql): Promise<any[] | undefined>;
 /**
  * @this xsql
  * @param {'currentKey:targetTable.targetKey'} mapper
@@ -36,8 +36,8 @@ export function toOne(this: import("./"), mapper: 'currentKey:targetTable.target
     addonKey: string;
     jsonKeys: string[];
     omitMapperKey: boolean;
-    filter: (row: ReadResult) => (row: ReadResult) => any;
-    map: (row: ReadResult) => (row: ReadResult) => any;
+    filter: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
+    map: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
     query: (q: xsql) => {};
     override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");
@@ -61,8 +61,8 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
     omitMapperKey: boolean;
     splitter: string;
     arrayMapper: (jsonArray: []) => string[];
-    filter: (row: ReadResult) => (row: ReadResult) => any;
-    map: (row: ReadResult) => (row: ReadResult) => any;
+    filter: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
+    map: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
     query: (q: xsql) => {};
     override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");
@@ -81,8 +81,8 @@ export function toMany(this: import("./"), mapper: 'currentKey:targetTable.targe
 export function fromOne(this: import("./"), addonKey: string, mapper: 'currentKey:targetTable.targetKey', options?: {
     jsonKeys: string[];
     omitMapperKey: boolean;
-    filter: (row: ReadResult) => (row: ReadResult) => any;
-    map: (row: ReadResult) => (row: ReadResult) => any;
+    filter: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
+    map: (row: import("./array").ReadResult<any>) => (row: import("./array").ReadResult<any>) => any;
     query: (q: xsql) => {};
     override: (q: xsql, currentIds: any[], currentRows: any[]) => {};
 }): import("./");

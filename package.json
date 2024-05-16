@@ -44,7 +44,7 @@
     "types:clean": "yarn cli types clean",
     "db:up": "docker-compose up -d",
     "db:start": "pnpm db:up && pnpm cli dbCheck",
-    "db:down": "docker-compose down",
+    "db:down": "docker-compose down && pnpm db:clean",
     "db:stop": "docker-compose stop",
     "db:clean": "rm -rf db/datadir",
     "db:reset": "pnpm db:down && pnpm db:clean && pnpm db:up && pnpm cli dbCheck"

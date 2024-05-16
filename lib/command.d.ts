@@ -7,18 +7,19 @@ export type OkPacket = import('mysql').OkPacket;
    * @param {Command} cmd
    * @returns {Promise<ReadResult>}
    */
-export function _runCommand(this: import("./"), cmd: Command, table: any, data: any, options: any, xsql: any): Promise<ReadResult>;
+export function _runCommand(this: import("./"), cmd: Command, table: any, data: any, options: any, xsql: any): Promise<ReadResult<any>>;
 /**
  * Read table from database
  * @this xsql
+ * @template T
  * @param {string} table
  * @param {Object} options
  * @param {string[]} options.jsonKeys
- * @returns {Promise<ReadResult>}
+ * @returns {Promise<ReadResult<T>>}
  */
-export function Read(this: import("./"), table: string, options: {
+export function Read<T>(this: import("./"), table: string, options: {
     jsonKeys: string[];
-}): Promise<ReadResult>;
+}): Promise<ReadResult<T>>;
 /**
  * Delete rows from table
  * @this xsql

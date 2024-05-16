@@ -8,11 +8,17 @@ export class Statement extends Array<any> {
     /** @returns {string} */
     toRaw(): string;
 }
-export class ReadResult extends Array<any> {
+/**
+ * @template T
+ */
+export class ReadResult<T> extends Array<any> {
+    /**
+     * @param {{ array: T[], eof: boolean, pagination: PaginationResult }} param0
+     */
     constructor({ array, eof, pagination }: {
-        array: any;
-        eof: any;
-        pagination: any;
+        array: T[];
+        eof: boolean;
+        pagination: PaginationResult;
     });
     /** @type {boolean} */
     eof: boolean;
