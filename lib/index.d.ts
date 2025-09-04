@@ -197,8 +197,8 @@ declare namespace clients {
         isLog: boolean;
         isInit: boolean;
         logger: (msg: string) => void;
-        escape(value: any): string;
-        escapeId(value: any): string;
+        escape(value: any, stringifyObjects?: boolean | undefined, timeZone?: ("local" | "Z" | (string & {})) | undefined): string;
+        escapeId(value: any, forbidQualified?: boolean | undefined): string;
         init(config: any): void;
         close(): Promise<any>;
         _checkInit(): Promise<void>;
