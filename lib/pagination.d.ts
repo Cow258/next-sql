@@ -1,6 +1,6 @@
-export type xsql = import('./');
-export type State = import('./').State;
-export type ReadResult = import('./array').ReadResult;
+export type xsql = import("./");
+export type State = import("./").State;
+export type ReadResult = import("./array").ReadResult;
 export type PaginationOptions = {
     /**
      * [Default: 1] The current page

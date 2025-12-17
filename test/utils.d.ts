@@ -3,16 +3,16 @@ import { user } from "../testConfig";
 import { password } from "../testConfig";
 import { database } from "../testConfig";
 export namespace sqlConfig {
-    const defaultHost: string;
-    const connectionLimit: number;
-    const waitForConnections: boolean;
-    const acquireTimeout: number;
-    const timeout: number;
-    const charset: string;
-    const isLog: boolean;
+    let defaultHost: string;
+    let connectionLimit: number;
+    let waitForConnections: boolean;
+    let acquireTimeout: number;
+    let timeout: number;
+    let charset: string;
+    let isLog: boolean;
     namespace hosts {
         namespace test {
-            export const client: string;
+            export let client: string;
             export { host };
             export { user };
             export { password };
@@ -20,7 +20,7 @@ export namespace sqlConfig {
         }
     }
 }
-export function GetUuid(): any;
+export function GetUuid(): string;
 export function GetLetter(num: any): string;
 export function GenArray(start: any, length: any): any[];
 export function Sleep(ms: any): Promise<any>;

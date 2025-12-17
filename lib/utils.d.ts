@@ -9,5 +9,5 @@ export function objectToJson(data: any, jsonKeys: string[]): any;
  * @param {Object} data
  * @param {string[]} [jsonKeys]
  */
-export function parseJson(data: any, jsonKeys?: string[] | undefined): any;
+export function parseJson(data: any, jsonKeys?: string[]): any;
 export function getByString(obj: any, path?: string): any;

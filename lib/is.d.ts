@@ -1,13 +1,13 @@
 export function defined(val: any): boolean;
-export function bool(val: any): boolean;
+export function bool(val: any): val is boolean;
 export function number(val: any): boolean;
 export function nan(val: any): boolean;
-export function string(val: any): boolean;
+export function string(val: any): val is string;
 export function fn(val: any): boolean;
 export function async(val: any): boolean;
-export function promise(val: any): boolean;
+export function promise(val: any): val is Promise<any>;
 export function buffer(val: any): boolean;
-export function array(val: any): boolean;
+export function array(val: any): val is any[];
 export function object(val: any): boolean;
 export function plainObject(val: any): boolean;
 export function empty(val: any): boolean;

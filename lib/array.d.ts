@@ -1,4 +1,8 @@
-export type PaginationResult = import('./pagination').PaginationResult;
+export type ReadResultType<RowType> = Array<RowType> & {
+    eof: boolean;
+    pagination: PaginationResult;
+};
+export type PaginationResult = import("./pagination").PaginationResult;
 /** @typedef {import('./pagination').PaginationResult} PaginationResult */
 export class Statement extends Array<any> {
     constructor({ array, toRaw }: {
@@ -19,5 +23,9 @@ export class ReadResult extends Array<any> {
     /** @type {PaginationResult} */
     pagination: PaginationResult;
 }
+/**
+ * @template RowType
+ * @typedef {Array<RowType> & { eof: boolean, pagination: PaginationResult }} ReadResultType
+ */ /** @exports ReadResultType */
 /** @param {any[]} ary */
 export function getLastItem(ary: any[]): any;
