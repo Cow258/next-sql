@@ -968,16 +968,33 @@ await xsql().batchInsert('computers', newComputers, {
 >
 > - The key length of each row must be the same
 > - The order of the keys must be the same
+> - The JSON object can be append by sumKeys
+> - The JSON array can be append by sumKeys
 
 ```js
 const wallets = [
-  { user: 1, cash: 50 }
-  { user: 2, cash: -50 }
+  { user: 1, cash: 50, name: 'Tom', config: { lang: 'en' }, flag: ['A'] }
+  { user: 2, cash: -50, name: 'Sam', config: { lang: 'kr' }, flag: ['B'] }
 ]
 await xsql().batchInsert('wallets', wallets, {
   primaryKeys: 'user',
-  sumKeys: ['cash']
+  jsonKey: ['config', 'flag'],
+  sumKeys: ['cash', 'config', 'flag']
 })
+```
+
+Equivalent to the following SQL statement
+
+```sql
+INSERT INTO `wallets`(`user`, `cash`)
+VALUES
+  (1, 50, 'Tom', '{"lang":"en"}', '["A"]'),
+  (2, -50, 'Sam', '{"lang":"kr"}', '["B"]')
+ON DUPLICATE KEY UPDATE
+  `cash` = `cash` + VALUES(`cash`),
+  `name` = VALUES(`name`),
+  `config` = JSON_MERGE_PATCH(`config`, VALUES(`config`))
+  `flag` = JSON_ARRAY_APPEND(`flag`, VALUES(`flag`))
 ```
 
 ---
@@ -992,10 +1009,6 @@ await xsql().where({ id: 1 }).update('users', {
 
 ### Update Single Row in summing mode <a name="update-single-sum"></a>
 
-> ⚠️ Not yet support in this moment
-
-> 🏃🏻‍♂️ Working on progress...
-
 ```js
 await xsql()
   .where({ id: 1 })
@@ -1004,11 +1017,26 @@ await xsql()
     {
       name: 'Tom',
       cash: 50,
+      config: { lang: 'en' },
+      flag: ['A'],
     },
     {
-      sumKeys: ['cash'],
+      jsonKey: ['config', 'flag'],
+      sumKeys: ['cash', 'config', 'flag'],
     }
   )
+```
+
+Equivalent to the following SQL statement
+
+```sql
+UPDATE `users`
+SET
+  `name` = 'Tom',
+  `cash` = `cash` + 50
+  `config` = JSON_MERGE_PATCH(`config`, '{"lang":"en"}')
+  `flag` = JSON_MERGE_PATCH(`flag`, '["A"]')
+WHERE `id` = 1
 ```
 
 ### Update all rows of table
