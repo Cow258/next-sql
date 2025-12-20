@@ -167,7 +167,7 @@ declare namespace clients {
         toStatement(cmd: import("../clients/mysql").Command, table: string, state: import("../clients/mysql").State, data: any, options?: {
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
-            jsonKeys: string[];
+            jsonMap: Record<string, "object" | "array">;
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
     };
@@ -193,7 +193,7 @@ declare namespace clients {
         toStatement(cmd: import("../clients/mysql2").Command, table: string, state: import("../clients/mysql2").State, data: any, options?: {
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
-            jsonKeys: string[];
+            jsonMap: Record<string, "object" | "array">;
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
     };
@@ -212,7 +212,7 @@ declare namespace clients {
         toStatement(cmd: import("../clients/database-js").Command, table: string, state: import("../clients/database-js").State, data: any, options?: {
             primaryKeys: Set<any>;
             sumKeys: Set<any>;
-            jsonKeys: string[];
+            jsonMap: Record<string, "object" | "array">;
         }): [sql: string, params: any[]];
         toRaw(sql: string, params: any[]): string;
     };

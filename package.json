@@ -74,7 +74,7 @@
     "mysql2": "^3.14.4",
     "mysqldump": "^3.2.0",
     "prettier": "^2.8.8",
-    "typescript": "^4.9.5"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@planetscale/database": "^1.6.0",

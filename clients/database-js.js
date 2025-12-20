@@ -166,7 +166,7 @@ const databaseJs = {
    * @param {Object} options
    * @param {Set} options.primaryKeys
    * @param {Set} options.sumKeys
-   * @param {string[]} options.jsonKeys
+   * @param {Record<string, 'object' | 'array'>} options.jsonMap
    * @returns {[sql: string, params: any[]]}
    */
   toStatement(cmd, table, state, data, options = {}) {
@@ -179,7 +179,7 @@ const databaseJs = {
       limit,
       offset,
     } = state
-    const { primaryKeys, sumKeys } = options
+    const { primaryKeys, sumKeys, jsonMap } = options
 
     const sql = []
     const params = []
@@ -201,7 +201,16 @@ const databaseJs = {
         const values = []
         for (const k of keys) {
           if (sumKeys.has(k)) {
-            values.push(`\`${k}\` = \`${k}\` + ?`)
+            switch (jsonMap[k]) {
+              case 'object':
+                values.push(`\`${k}\` = JSON_MERGE_PATCH(\`${k}\`, ?)`)
+                break
+              case 'array':
+                values.push(`\`${k}\` = JSON_ARRAY_APPEND(\`${k}\`, '$', ?)`)
+                break
+              default:
+                values.push(`\`${k}\` = \`${k}\` + ?`)
+            }
           } else {
             values.push(`\`${k}\` = ?`)
           }
@@ -223,7 +232,16 @@ const databaseJs = {
         for (const k of keys) {
           if (primaryKeys.has(k)) continue
           if (sumKeys.has(k)) {
-            values.push(`\`${k}\` = \`${k}\` + VALUES(\`${k}\`)`)
+            switch (jsonMap[k]) {
+              case 'object':
+                values.push(`\`${k}\` = JSON_MERGE_PATCH(\`${k}\`, VALUES(\`${k}\`))`)
+                break
+              case 'array':
+                values.push(`\`${k}\` = JSON_ARRAY_APPEND(\`${k}\`, '$', VALUES(\`${k}\`))`)
+                break
+              default:
+                values.push(`\`${k}\` = \`${k}\` + VALUES(\`${k}\`)`)
+            }
           } else {
             values.push(`\`${k}\` = VALUES(\`${k}\`)`)
           }
