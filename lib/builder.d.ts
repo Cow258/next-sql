@@ -94,49 +94,99 @@ export function or(input: any, operator: any, value: any): any;
  */
 export function select(this: import("./"), input?: ("*" | string | string[])): import("./");
 /**
- * Before fetch relationship
+ * Modify the output rows before fetching relationship
  * @this xsql
  * @param { (row: Row) => Row } cb
  */
 export function filter(this: import("./"), cb: (row: Row) => Row): import("./");
 /**
- * After fetch relationship
+ * Modify the output rows after fetching relationship
  * @this xsql
  * @param { (row: Row) => Row } cb
  */
 export function map(this: import("./"), cb: (row: Row) => Row): import("./");
 /**
+ * ```sql
+ * SELECT * FROM users GROUP BY {input}
+ * ```
  * @this xsql
  * @param {('*'|string|string[])} input
  */
 export function groupBy(this: import("./"), input: ("*" | string | string[])): import("./");
 /**
+ * ```sql
+ * SELECT * FROM users HAVING {input}
+ * ```
  * @this xsql
  * @param {('*'|string)} input
  */
 export function having(this: import("./"), input: ("*" | string)): import("./");
 /**
+ * ```sql
+ * SELECT * FROM users GROUP BY {input}
+ * ```
  * @this xsql
  * @param {('*'|string|string[])} input
  */
 export function orderBy(this: import("./"), input: ("*" | string | string[])): import("./");
 /**
+ * ```sql
+ * SELECT * FROM users LIMIT {input}
+ * ```
  * @this xsql
  * @param {number} input
  */
 export function limit(this: import("./"), input: number): import("./");
 /**
+ * ```sql
+ * SELECT * FROM users LIMIT 0,{input}
+ * ```
  * @this xsql
  * @param {number} input
  */
 export function offset(this: import("./"), input: number): import("./");
 /**
+ * Determine whether to enable logging
  * @this xsql
  * @param {boolean} input
  */
 export function log(this: import("./"), input: boolean): import("./");
 /**
+ * Extend the query with a pre-set query
+ *
+ * Used to separate the query into multiple parts and reuse them easily
+ * ### Example:
+ * ```js
+ * const UserModel = {
+ *   Extend: {
+ *     BasicInfo: (sql = xsql()) => {
+ *       sql
+ *         .select(['id', 'name', 'email'])
+ *         .where({ status: 1 })
+ *         .fromMany('cars', 'id:cars.userId', {
+ *           query: (q) => {
+ *             q.select(['id', 'model', 'color'])
+ *             q.where({ status: 1 })
+ *           }
+ *         })
+ *       }
+ *     }
+ *   }
+ * }
+ * const userRowsWithBasicInfo = await xsql()
+ *   .extend(UserModel.Extend.BasicInfo)
+ *   .where({ id: 1 })
+ *   .read('users')
+ * ```
  * @this xsql
  * @param {(q:xsql)=>void} extendsFn
  */
 export function extend(this: import("./"), extendsFn: (q: xsql) => void): import("./");
+/**
+ * Add `FOR UPDATE` to the end of the query
+ *
+ * `Only available in transaction`
+ * @this xsql
+ * @param {boolean} input
+ */
+export function forUpdate(this: import("./"), input?: boolean): import("./");

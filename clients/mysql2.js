@@ -176,6 +176,7 @@ const mysql2 = {
       orderBy,
       limit,
       offset,
+      forUpdate,
     } = state
     const { primaryKeys, sumKeys, jsonMap } = options
 
@@ -340,6 +341,7 @@ const mysql2 = {
       sql.push(`${is.defined(offset) ? offset : 0}`)
       if (is.defined(limit)) sql.push(`, ${limit}`)
     }
+    if (forUpdate) sql.push('FOR UPDATE')
     return [sql.join(' '), params]
   },
 

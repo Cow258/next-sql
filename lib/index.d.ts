@@ -48,6 +48,7 @@ declare class xsql {
     offset: typeof builder.offset | undefined;
     log: typeof builder.log | undefined;
     extend: typeof builder.extend | undefined;
+    forUpdate: typeof builder.forUpdate | undefined;
     /** @private */
     private _runCommand;
     /** Read table from database */
@@ -287,6 +288,7 @@ type State = {
     log: boolean;
     pagination: PaginationOptions;
     relation: RelationOptions[];
+    forUpdate: boolean;
 };
 type OkPacket = {
     /**
