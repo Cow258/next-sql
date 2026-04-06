@@ -4,8 +4,11 @@ export type Condition = {
     operator: Operator;
     connector: Connector;
 };
-export type xsql = import("./");
-export type Row = import("../clients/mysql").Row;
+export type JoinOption = {
+    mode: "JOIN" | "LEFT JOIN" | "RIGHT JOIN";
+    sql: string;
+    params: any[];
+};
 export type KeyValuePair = {
     [key: string]: any;
 };
@@ -13,10 +16,10 @@ export type Operator = ("=" | "<" | ">" | "<=" | "=>" | "<>" | "like" | "between
 export type Connector = ("AND" | "OR");
 export type TYPE = string;
 export namespace TYPE {
-    let BRACKET_START: string;
-    let BRACKET_END: string;
-    let NORMAL: string;
-    let RAW: string;
+    let BRACKET_START: "BRACKET_START";
+    let BRACKET_END: "BRACKET_END";
+    let NORMAL: "NORMAL";
+    let RAW: "RAW";
 }
 /**
  * @typedef {Object} Condition
@@ -29,13 +32,13 @@ export namespace TYPE {
  * @this xsql
  * @param {Condition} condition
  */
-export function _addCondition(this: import("./"), condition: Condition): void;
+export function _addCondition(this: xsql, condition: Condition): void;
 /**
  * @this xsql
  * @param {(string|KeyValuePair|(q: xsql) => {})} input
  * @param {Operator} operator
  */
-export function _addWhereClause(this: import("./"), input: (string | KeyValuePair | ((q: xsql) => {})), operator: Operator, value: any, connector?: string): import("./");
+export function _addWhereClause(this: xsql, input: (string | KeyValuePair | ((q: xsql) => {})), operator: Operator, value: any, connector?: string): xsql;
 /**
  * @see {@link where}
  * @overload
@@ -43,7 +46,7 @@ export function _addWhereClause(this: import("./"), input: (string | KeyValuePai
  * @param {KeyValuePair} input
  * @returns {xsql}
  */
-export function where(this: import("./"), input: KeyValuePair): xsql;
+export function where(this: xsql, input: KeyValuePair): xsql;
 /**
  * @see {@link where}
  * @overload
@@ -52,7 +55,7 @@ export function where(this: import("./"), input: KeyValuePair): xsql;
  * @param {Array} operator
  * @returns {xsql}
  */
-export function where(this: import("./"), input: string, operator: any[]): xsql;
+export function where(this: xsql, input: string, operator: any[]): xsql;
 /**
  * @see {@link where}
  * @overload
@@ -60,7 +63,7 @@ export function where(this: import("./"), input: string, operator: any[]): xsql;
  * @param {(q: xsql) => xsql | void} input
  * @returns {xsql}
  */
-export function where(this: import("./"), input: (q: xsql) => xsql | void): xsql;
+export function where(this: xsql, input: (q: xsql) => xsql | void): xsql;
 /**
  * ```js
  * xsql()
@@ -83,7 +86,7 @@ export function where(this: import("./"), input: (q: xsql) => xsql | void): xsql
  * @param {*} value
  * @returns {xsql}
  */
-export function where(this: import("./"), input: string, operator: Operator, value: any): xsql;
+export function where(this: xsql, input: string, operator: Operator, value: any): xsql;
 /** @type {typeof where} */
 export function and(input: any, operator: any, value: any): any;
 /** @type {typeof where} */
@@ -92,19 +95,19 @@ export function or(input: any, operator: any, value: any): any;
  * @this xsql
  * @param {('*'|string|string[])} input
  */
-export function select(this: import("./"), input?: ("*" | string | string[])): import("./");
+export function select(this: xsql, input?: ("*" | string | string[])): xsql;
 /**
  * Modify the output rows before fetching relationship
  * @this xsql
  * @param { (row: any) => any } cb
  */
-export function filter(this: import("./"), cb: (row: any) => any): import("./");
+export function filter(this: xsql, cb: (row: any) => any): xsql;
 /**
  * Modify the output rows after fetching relationship
  * @this xsql
  * @param { (row: any) => any } cb
  */
-export function map(this: import("./"), cb: (row: any) => any): import("./");
+export function map(this: xsql, cb: (row: any) => any): xsql;
 /**
  * ```sql
  * SELECT * FROM users GROUP BY {input}
@@ -112,7 +115,7 @@ export function map(this: import("./"), cb: (row: any) => any): import("./");
  * @this xsql
  * @param {('*'|string|string[])} input
  */
-export function groupBy(this: import("./"), input: ("*" | string | string[])): import("./");
+export function groupBy(this: xsql, input: ("*" | string | string[])): xsql;
 /**
  * ```sql
  * SELECT * FROM users HAVING {input}
@@ -120,7 +123,7 @@ export function groupBy(this: import("./"), input: ("*" | string | string[])): i
  * @this xsql
  * @param {('*'|string)} input
  */
-export function having(this: import("./"), input: ("*" | string)): import("./");
+export function having(this: xsql, input: ("*" | string)): xsql;
 /**
  * ```sql
  * SELECT * FROM users GROUP BY {input}
@@ -128,7 +131,7 @@ export function having(this: import("./"), input: ("*" | string)): import("./");
  * @this xsql
  * @param {('*'|string|string[])} input
  */
-export function orderBy(this: import("./"), input: ("*" | string | string[])): import("./");
+export function orderBy(this: xsql, input: ("*" | string | string[])): xsql;
 /**
  * ```sql
  * SELECT * FROM users LIMIT {input}
@@ -136,7 +139,7 @@ export function orderBy(this: import("./"), input: ("*" | string | string[])): i
  * @this xsql
  * @param {number} input
  */
-export function limit(this: import("./"), input: number): import("./");
+export function limit(this: xsql, input: number): xsql;
 /**
  * ```sql
  * SELECT * FROM users LIMIT 0,{input}
@@ -144,13 +147,13 @@ export function limit(this: import("./"), input: number): import("./");
  * @this xsql
  * @param {number} input
  */
-export function offset(this: import("./"), input: number): import("./");
+export function offset(this: xsql, input: number): xsql;
 /**
  * Determine whether to enable logging
  * @this xsql
  * @param {boolean} input
  */
-export function log(this: import("./"), input: boolean): import("./");
+export function log(this: xsql, input: boolean): xsql;
 /**
  * Extend the query with a pre-set query
  *
@@ -181,7 +184,7 @@ export function log(this: import("./"), input: boolean): import("./");
  * @this xsql
  * @param {(q:xsql)=>void} extendsFn
  */
-export function extend(this: import("./"), extendsFn: (q: xsql) => void): import("./");
+export function extend(this: xsql, extendsFn: (q: xsql) => void): xsql;
 /**
  * Add `FOR UPDATE` to the end of the query
  *
@@ -189,4 +192,29 @@ export function extend(this: import("./"), extendsFn: (q: xsql) => void): import
  * @this xsql
  * @param {boolean} input
  */
-export function forUpdate(this: import("./"), input?: boolean): import("./");
+export function forUpdate(this: xsql, input?: boolean): xsql;
+/**
+ * @typedef {Object} JoinOption
+ * @property {'JOIN'|'LEFT JOIN'|'RIGHT JOIN'} mode
+ * @property {string} sql
+ * @property {any[]} params
+ */ /** @exports JoinOption */
+/**
+ * Add a join to the query
+ * @this xsql
+ * @param {string} sql
+ * @param {any[]} [params]
+ */
+export function join(this: xsql, sql: string, params?: any[]): xsql;
+/**
+ * @this xsql
+ * @param {string} sql
+ * @param {any[]} [params]
+ */
+export function leftJoin(this: xsql, sql: string, params?: any[]): xsql;
+/**
+ * @this xsql
+ * @param {string} sql
+ * @param {any[]} [params]
+ */
+export function rightJoin(this: xsql, sql: string, params?: any[]): xsql;

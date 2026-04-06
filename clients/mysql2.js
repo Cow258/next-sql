@@ -177,6 +177,7 @@ const mysql2 = {
       limit,
       offset,
       forUpdate,
+      joins,
     } = state
     const { primaryKeys, sumKeys, jsonMap } = options
 
@@ -342,6 +343,12 @@ const mysql2 = {
       if (is.defined(limit)) sql.push(`, ${limit}`)
     }
     if (forUpdate) sql.push('FOR UPDATE')
+    if (joins.length) {
+      for (const join of joins) {
+        sql.push(`${join.mode} ${join.sql}`)
+        if (join.params.length) params.push(...join.params)
+      }
+    }
     return [sql.join(' '), params]
   },
 

@@ -178,6 +178,8 @@ const databaseJs = {
       orderBy,
       limit,
       offset,
+      forUpdate,
+      joins,
     } = state
     const { primaryKeys, sumKeys, jsonMap } = options
 
@@ -342,6 +344,13 @@ const databaseJs = {
       sql.push('LIMIT')
       sql.push(`${is.defined(offset) ? offset : 0}`)
       if (is.defined(limit)) sql.push(`, ${limit}`)
+    }
+    if (forUpdate) sql.push('FOR UPDATE')
+    if (joins.length) {
+      for (const join of joins) {
+        sql.push(`${join.mode} ${join.sql}`)
+        if (join.params.length) params.push(...join.params)
+      }
     }
     return [sql.join(' '), params]
   },

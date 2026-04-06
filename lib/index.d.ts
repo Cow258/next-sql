@@ -49,6 +49,9 @@ declare class xsql {
     log: typeof builder.log | undefined;
     extend: typeof builder.extend | undefined;
     forUpdate: typeof builder.forUpdate | undefined;
+    join: typeof builder.join | undefined;
+    leftJoin: typeof builder.leftJoin | undefined;
+    rightJoin: typeof builder.rightJoin | undefined;
     /** @private */
     private _runCommand;
     /** Read table from database */
@@ -98,7 +101,7 @@ declare class xsql {
      * @param {Command} cmd
      * @param {string} table
      */
-    toStatement: ((cmd: Command, table: string, data: any, options: any) => Statement) | undefined;
+    toStatement: ((cmd: command.Command, table: string, data: any, options: any) => Statement) | undefined;
     /**
      * Render raw SQL statement string
      *
@@ -131,7 +134,7 @@ declare class xsql {
     toRaw: ((sql: string, params: any[]) => string) | undefined;
 }
 declare namespace xsql {
-    export { defaultHost, options, hosts, pools, clients, init, getClient, close, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, Condition, Conditions, State, OkPacket, HostOptions };
+    export { defaultHost, options, hosts, pools, clients, init, getClient, close, State, OkPacket, HostOptions };
 }
 import builder = require("./builder");
 import command = require("./command");
@@ -267,17 +270,10 @@ declare function init(options: {
     };
 }): void;
 /** @param {CLIENTS} client */
-declare function getClient(client: CLIENTS): any;
+declare function getClient(client: string): any;
 declare function close(): Promise<any[]>;
-type CLIENTS = import("./clients/constance").CLIENTS;
-type PaginationOptions = import("./pagination").PaginationOptions;
-type PaginationResult = import("./pagination").PaginationResult;
-type RelationOptions = import("./relation").RelationOptions;
-type Command = import("./command").Command;
-type Condition = import("./builder").Condition;
-type Conditions = Condition[];
 type State = {
-    conditions: Conditions;
+    conditions: builder.Condition[];
     select: string;
     filter: Function;
     groupBy: string;
@@ -289,6 +285,7 @@ type State = {
     pagination: PaginationOptions;
     relation: RelationOptions[];
     forUpdate: boolean;
+    joins: builder.JoinOption[];
 };
 type OkPacket = {
     /**
@@ -312,3 +309,5 @@ type HostOptions = {
     password: string;
     database: string;
 };
+import type { PaginationOptions } from './pagination';
+import type { RelationOptions } from './relation';

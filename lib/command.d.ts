@@ -1,6 +1,5 @@
 export type xsql = import("./");
 export type Command = ("read" | "update" | "insert" | "delete" | "batchInsert");
-export type OkPacket = import("mysql").OkPacket;
 /**
    * @private
    * @this xsql
@@ -24,9 +23,9 @@ export function Read<RowType>(this: import("./"), table: string, options?: {
  * Delete rows from table
  * @this xsql
  * @param {string} table
- * @returns {Promise<OkPacket>}
+ * @returns {Promise<ResultSetHeader>}
  */
-export function Delete(this: import("./"), table: string): Promise<OkPacket>;
+export function Delete(this: import("./"), table: string): Promise<ResultSetHeader>;
 /**
  * Update row from table
  * @this xsql
@@ -34,23 +33,23 @@ export function Delete(this: import("./"), table: string): Promise<OkPacket>;
  * @param {Object} [options]
  * @param {string[]} [options.sumKeys]
  * @param {string[]} [options.jsonKeys]
- * @returns {Promise<OkPacket>}
+ * @returns {Promise<ResultSetHeader>}
  */
 export function Update(this: import("./"), table: string, data: any, options?: {
     sumKeys?: string[] | undefined;
     jsonKeys?: string[] | undefined;
-}): Promise<OkPacket>;
+}): Promise<ResultSetHeader>;
 /**
  * Insert a row into table
  * @this xsql
  * @param {string} table
  * @param {Object} [options]
  * @param {string[]} [options.jsonKeys]
- * @returns {Promise<OkPacket>}
+ * @returns {Promise<ResultSetHeader>}
  */
 export function Insert(this: import("./"), table: string, data: any, options?: {
     jsonKeys?: string[] | undefined;
-}): Promise<OkPacket>;
+}): Promise<ResultSetHeader>;
 /**
  * BatchInsert Insert a row into table
  * @this xsql
@@ -68,3 +67,4 @@ export function BatchInsert(this: import("./"), table: string, data: any, option
 }): Promise<void>;
 import { ReadResult } from "./array";
 import type { ReadResultType } from './array';
+import type { ResultSetHeader } from 'mysql2';
