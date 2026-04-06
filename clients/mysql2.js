@@ -189,6 +189,12 @@ const mysql2 = {
         sql.push(select)
         sql.push('FROM')
         sql.push(table)
+        if (joins.length) {
+          for (const join of joins) {
+            sql.push(`${join.mode} ${join.sql}`)
+            if (join.params.length) params.push(...join.params)
+          }
+        }
         break
       case 'insert':
         sql.push('INSERT INTO')
@@ -343,12 +349,6 @@ const mysql2 = {
       if (is.defined(limit)) sql.push(`, ${limit}`)
     }
     if (forUpdate) sql.push('FOR UPDATE')
-    if (joins.length) {
-      for (const join of joins) {
-        sql.push(`${join.mode} ${join.sql}`)
-        if (join.params.length) params.push(...join.params)
-      }
-    }
     return [sql.join(' '), params]
   },
 
