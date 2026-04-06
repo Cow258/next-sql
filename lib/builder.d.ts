@@ -96,15 +96,15 @@ export function select(this: import("./"), input?: ("*" | string | string[])): i
 /**
  * Modify the output rows before fetching relationship
  * @this xsql
- * @param { (row: Row) => Row } cb
+ * @param { (row: any) => any } cb
  */
-export function filter(this: import("./"), cb: (row: Row) => Row): import("./");
+export function filter(this: import("./"), cb: (row: any) => any): import("./");
 /**
  * Modify the output rows after fetching relationship
  * @this xsql
- * @param { (row: Row) => Row } cb
+ * @param { (row: any) => any } cb
  */
-export function map(this: import("./"), cb: (row: Row) => Row): import("./");
+export function map(this: import("./"), cb: (row: any) => any): import("./");
 /**
  * ```sql
  * SELECT * FROM users GROUP BY {input}
