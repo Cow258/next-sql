@@ -64,7 +64,7 @@ declare class xsql {
     insert: typeof command.Insert | undefined;
     /** BatchInsert Insert a row into table */
     batchInsert: typeof command.BatchInsert | undefined;
-    transaction: ((callback: (t: () => transaction.xsql) => Promise<any>) => Promise<void>) | undefined;
+    transaction: ((callback: (t: typeof xsql) => Promise<void | any>) => Promise<void>) | undefined;
     pagination: typeof pagination | undefined;
     /** @private */
     private _relationFetch;
@@ -138,7 +138,6 @@ declare namespace xsql {
 }
 import builder = require("./builder");
 import command = require("./command");
-import transaction = require("./transaction");
 import { pagination } from "./pagination";
 import { toOne } from "./relation";
 import { toMany } from "./relation";
