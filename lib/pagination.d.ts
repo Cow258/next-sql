@@ -5,31 +5,31 @@ export type PaginationOptions = {
     /**
      * [Default: 1] The current page
      */
-    currPage: number;
+    currPage?: number | undefined;
     /**
      * [Default: 10] How many rows pre each page
      */
-    rowStep: number;
+    rowStep?: number | undefined;
     /**
      * [Default: 4] How many pages will shown on the navigation bar
      */
-    navStep: number;
+    navStep?: number | undefined;
     /**
      * Database start index
      */
-    aLimit: number;
+    aLimit?: number | undefined;
     /**
      * Database end index
      */
-    bLimit: number;
+    bLimit?: number | undefined;
     /**
      * Page start index
      */
-    aPage: number;
+    aPage?: number | undefined;
     /**
      * Page end index
      */
-    bPage: number;
+    bPage?: number | undefined;
 };
 export type PaginationNavButton = {
     page: number;
@@ -76,9 +76,9 @@ export function paginationAfter(this: import("./"), rows: ReadResult, state: Sta
     paginationRows: any[];
     paginationResult: {
         isOutOfRange: boolean;
-        currPage: number;
-        rowStep: number;
-        navStep: number;
+        currPage: number | undefined;
+        rowStep: number | undefined;
+        navStep: number | undefined;
         row: {
             record: {
                 from: number;
@@ -90,8 +90,8 @@ export function paginationAfter(this: import("./"), rows: ReadResult, state: Sta
             };
         };
         page: {
-            from: number;
-            current: number;
+            from: number | undefined;
+            current: number | undefined;
             to: number;
             hasPrev: boolean;
             hasNext: boolean;
