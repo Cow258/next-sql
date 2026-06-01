@@ -13,7 +13,7 @@ export type xsql = import("./");
 export type KeyValuePair = {
     [key: string]: any;
 };
-export type Operator = ("=" | "<" | ">" | "<=" | "=>" | "<>" | "like" | "between" | "in" | "find_in_set" | "not" | "not like" | "not between" | "not in" | "is not");
+export type Operator = ("=" | "<" | ">" | "<=" | ">=" | "<>" | "like" | "between" | "in" | "find_in_set" | "not" | "not like" | "not between" | "not in" | "is not");
 export type Connector = ("AND" | "OR");
 export type TYPE = string;
 export namespace TYPE {
