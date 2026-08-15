@@ -17,6 +17,7 @@ declare class xsql {
     hostId: string | undefined;
     conn: any;
     isTransaction: boolean | undefined;
+    __testId: string | undefined;
     /** @type {HostOptions} */
     host: HostOptions;
     client: any;
@@ -134,7 +135,7 @@ declare class xsql {
     toRaw: ((sql: string, params: any[]) => string) | undefined;
 }
 declare namespace xsql {
-    export { defaultHost, options, hosts, pools, clients, init, getClient, close, capture, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, JoinOption, Condition, Conditions, State, OkPacket, HostOptions };
+    export { defaultHost, options, hosts, pools, clients, init, getClient, close, __isTesting, __testHook, CLIENTS, PaginationOptions, PaginationResult, RelationOptions, Command, JoinOption, Condition, Conditions, State, OkPacket, HostOptions };
 }
 import builder = require("./builder");
 import command = require("./command");
@@ -271,23 +272,13 @@ declare function init(options: {
 /** @param {CLIENTS} client */
 declare function getClient(client: CLIENTS): any;
 declare function close(): Promise<any[]>;
-/**
- * Compile SQL without connecting. Returns a constructor with the same shape as `xsql`.
- *
- * @param {import('./capture').CaptureExecutor} executor
- * @returns {import('./capture').CaptureXsql}
- */
-declare function capture(executor: import("./capture").CaptureExecutor): import("./capture").CaptureXsql;
-declare namespace capture {
-    /**
-     * In-memory seed tables. Writes mutate seed so later reads on the same `t` see them.
-     * WHERE is not applied; assert accuracy on `t.statements`.
-     *
-     * @param {Record<string, object[]>} seed
-     * @returns {import('./capture').CaptureXsql}
-     */
-    function tables(seed: Record<string, object[]>): import("./capture").CaptureXsql;
-}
+declare var __isTesting: boolean;
+declare var __testHook: {
+    logs: {
+        [testId: string]: import("./testHook").LogEntry[];
+    };
+    mount: (callback: (testId: string) => Promise<void> | void) => Promise<void>;
+};
 type CLIENTS = import("./clients/constance").CLIENTS;
 type PaginationOptions = import("./pagination").PaginationOptions;
 type PaginationResult = import("./pagination").PaginationResult;

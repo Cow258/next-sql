@@ -816,7 +816,7 @@ Parameters:
 > **🔄 Coming Soon...**\
 > Based on performance considerations temporarily not supported.\
 > Maybe it will be supported in some days of the future.\
-> `xsql.capture` does not pretend to support `fromMany`.
+> `xsql.__testHook.mount` does not pretend to support `fromMany`.
 
 #### Example <a name="relationship-example"></a>
 
@@ -1115,52 +1115,71 @@ await xsql().transaction(async (t) => {
 
 # 🧪 Testing <a name="testing"></a>
 
-Compile SQL in unit tests without a pool or `xsql.init()`. Product code keeps `t ??= xsql`; tests inject the constructor returned by `capture`.
-
-```js
-const t = xsql.capture.tables({ users: [{ id: 1, name: 'Ada' }] })
-await someDomainWrite({ t })
-expect(t.statements.filter((s) => s.cmd === 'update')[0].params).toEqual(...)
-```
-
-Require a client first so the statement renderer is loaded:
+Run sequential reads／writes against a **real MySQL** connection inside
+`xsql.__testHook.mount`. The hook begins a transaction, runs the callback in
+`AsyncLocalStorage`, records each statement on `logs[testId]`, and **always
+ROLLBACK**s — never `COMMIT`. Product code keeps `t ??= xsql` and does not
+import the hook.
 
 ```js
 const xsql = require('next-sql')
 require('next-sql/clients/mysql2')
+
+xsql.init({ /* hosts… */ })
+
+// Set once in the test-runner preload (process lifetime). mount does not toggle it.
+xsql.__isTesting = true
+
+await xsql.__testHook.mount(async (testId) => {
+  await xsql().insert('events', { /* schema-complete row */ })
+  await someDomainWrite() // no injected t
+  expect(xsql.__testHook.logs[testId][0].params).toEqual(...)
+})
 ```
 
-### `xsql.capture(executor)`
+### `xsql.__isTesting`
 
-`executor({ cmd, table, sql, params, toRaw })` must:
+Test-runner preload sets this to `true` once. While it is set, any
+`_runCommand`／`query`／`getConnection`／real `BEGIN` **outside** a `mount`
+callback throws. next-sql’s own Docker／MySQL tests that `COMMIT` leave this
+flag unset.
 
-- `read` → row array (may be empty)
-- write (`update` / `insert` / `delete` / `batchInsert`) → `OkPacket` (at least `affectedRows`; `insert` may set `insertId`)
-- unhandled `cmd` → **throw** (do not return `[]`)
+### `xsql.__testHook.mount(callback)`
 
-Each execution (including relation follow-up, pagination, and `this.query`) appends to:
+1. Take a connection from the pool and `BEGIN`
+2. Pre-create `logs[testId] = []`
+3. `als.run({ testId, conn, logs }, () => callback(testId))`
+4. `finally`: always `ROLLBACK` and release — never `COMMIT`
+
+Requires `xsql.init()` (real pool). Without init, `mount` throws clearly.
+
+During the callback, each `xsql()` copies `conn`／`isTransaction`／`__testId`
+from ALS. `toOne`／`toMany`／`fromOne` follow-ups use the same constructor path,
+so they stay on the mount connection. `fromMany` is not implemented (see
+[fromMany()](#frommany)).
+
+### `xsql.__testHook.logs`
 
 ```ts
-t.statements: Array<{
-  cmd: string        // read|update|insert|delete|batchInsert|query
-  table?: string     // query may omit
+type LogEntry = {
+  ts: number
+  cmd: string
+  table?: string
+  data?: any
   sql: string
   params: any[]
   toRaw: () => string
-}>
+}
 ```
 
-Assert **`[sql, params]`** by default. Use **`toRaw()`** when quoting or `IN` parentheses matter.
+Entries are pushed after `toStatement` (and for raw `this.query`) onto the
+store’s array reference. Assert compile accuracy with `[sql, params]`; use
+`toRaw()` for quoting／`IN` parentheses. Row state is whatever the engine
+returns on a later `xsql().read()` in the **same** mount.
 
-`t().transaction(async (tx) => { ... })` runs the callback with the same capture constructor. No begin / commit / rollback / release.
+### Nested `xsql().transaction`
 
-`toOne` / `toMany` / `fromOne` follow-up reads use this same `t`, not the global `xsql(hostId)` constructor. `fromMany` is not implemented (see [fromMany()](#frommany)).
-
-### `xsql.capture.tables(seed)`
-
-`seed` is `Record<tableName, Row[]>`.
-
-- **read:** shallow-copy that table's rows. WHERE is not applied; assert WHERE on `statements`.
-- **write:** record the statement and mutate seed (update merges, insert / batchInsert push, delete clears) so a later read on the same `t` can finish. Seed mutation is not the accuracy source of truth.
-
-You can still pass a custom `capture(executor)` when you need full control.
+Inside `mount`, nested `transaction` **joins** the test connection: no second
+`getConnection`／`BEGIN`／`COMMIT`. If the SUT throws, the error propagates;
+`mount`’s `finally` still rolls back once. Outside `mount`, behaviour is the
+existing begin／commit／rollback path.
