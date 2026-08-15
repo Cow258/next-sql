@@ -46,6 +46,7 @@ For more detail, please [see roadmap](https://github.com/Cow258/next-sql/project
   - [Delete Row](#delete-row)
   - [Delete all rows of table](#delete-all-rows-of-table)
   - [Transaction](#transaction)
+- [🧪 Testing](#testing)
 
 # 🎉 Introduction <a name="introduction"></a>
 
@@ -814,7 +815,8 @@ Parameters:
 
 > **🔄 Coming Soon...**\
 > Based on performance considerations temporarily not supported.\
-> Maybe it will be supported in some days of the future.
+> Maybe it will be supported in some days of the future.\
+> `xsql.capture` does not pretend to support `fromMany`.
 
 #### Example <a name="relationship-example"></a>
 
@@ -1110,3 +1112,55 @@ await xsql().transaction(async (t) => {
   ])
 })
 ```
+
+# 🧪 Testing <a name="testing"></a>
+
+Compile SQL in unit tests without a pool or `xsql.init()`. Product code keeps `t ??= xsql`; tests inject the constructor returned by `capture`.
+
+```js
+const t = xsql.capture.tables({ users: [{ id: 1, name: 'Ada' }] })
+await someDomainWrite({ t })
+expect(t.statements.filter((s) => s.cmd === 'update')[0].params).toEqual(...)
+```
+
+Require a client first so the statement renderer is loaded:
+
+```js
+const xsql = require('next-sql')
+require('next-sql/clients/mysql2')
+```
+
+### `xsql.capture(executor)`
+
+`executor({ cmd, table, sql, params, toRaw })` must:
+
+- `read` → row array (may be empty)
+- write (`update` / `insert` / `delete` / `batchInsert`) → `OkPacket` (at least `affectedRows`; `insert` may set `insertId`)
+- unhandled `cmd` → **throw** (do not return `[]`)
+
+Each execution (including relation follow-up, pagination, and `this.query`) appends to:
+
+```ts
+t.statements: Array<{
+  cmd: string        // read|update|insert|delete|batchInsert|query
+  table?: string     // query may omit
+  sql: string
+  params: any[]
+  toRaw: () => string
+}>
+```
+
+Assert **`[sql, params]`** by default. Use **`toRaw()`** when quoting or `IN` parentheses matter.
+
+`t().transaction(async (tx) => { ... })` runs the callback with the same capture constructor. No begin / commit / rollback / release.
+
+`toOne` / `toMany` / `fromOne` follow-up reads use this same `t`, not the global `xsql(hostId)` constructor. `fromMany` is not implemented (see [fromMany()](#frommany)).
+
+### `xsql.capture.tables(seed)`
+
+`seed` is `Record<tableName, Row[]>`.
+
+- **read:** shallow-copy that table's rows. WHERE is not applied; assert WHERE on `statements`.
+- **write:** record the statement and mutate seed (update merges, insert / batchInsert push, delete clears) so a later read on the same `t` can finish. Seed mutation is not the accuracy source of truth.
+
+You can still pass a custom `capture(executor)` when you need full control.
